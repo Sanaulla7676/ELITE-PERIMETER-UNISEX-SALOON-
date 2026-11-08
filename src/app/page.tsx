@@ -31,11 +31,6 @@ export default function HomePage() {
       <section className="home-hero-track home-hero-track--peach" data-home-hero-track>
         <div className="home-hero-sticky">
           <div className="home-hero-background" aria-hidden="true">
-            <div className="home-hero-scrim" data-hero-scrim />
-            <div className="home-hero-grain" />
-          </div>
-
-          <div className="container home-hero-stage">
             <div className="home-hero-bg-media" data-hero-media>
               <Image
                 className="home-hero-bg-image"
@@ -47,6 +42,11 @@ export default function HomePage() {
                 style={{ objectFit: "contain", objectPosition: "center" }}
               />
             </div>
+            <div className="home-hero-scrim" data-hero-scrim />
+            <div className="home-hero-grain" />
+          </div>
+
+          <div className="container home-hero-stage">
             <div className="home-hero-copy" data-hero-copy>
               <h1 className="hero-title home-hero-brand-title">
                 <span className="hero-title-line"><span className="home-hero-wordmark">ELITE</span></span>
