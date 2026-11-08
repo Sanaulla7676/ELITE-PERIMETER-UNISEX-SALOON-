@@ -452,7 +452,7 @@
     if(t>=1.68){const radius=lerp(0,2450,easeInCubic(remap(t,1.68,2.05)));ctx.fillStyle=C.blue;ctx.beginPath();ctx.arc(PW/2,PH*.56,radius,0,Math.PI*2);ctx.fill();}
   }
   function portraitScene2(t) {
-    portraitSurface(C.paper2);const cx=PW/2,cy=900,rx=405,ry=560;
+    portraitSurface(C.ice);const cx=PW/2,cy=900,rx=405,ry=560;
     ctx.save();ctx.strokeStyle='rgba(185,149,101,.42)';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
     ctx.strokeStyle='rgba(75,42,61,.14)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(cx,cy,rx*.84,ry*.84,0,0,Math.PI*2);ctx.stroke();ctx.restore();
     const appear=easeOutExpo(remap(t,2.05,2.55));drawSalonEmblem(cx,cy,165,appear);
