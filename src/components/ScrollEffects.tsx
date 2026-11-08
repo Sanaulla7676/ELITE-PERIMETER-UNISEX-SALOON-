@@ -52,7 +52,7 @@ export function ScrollEffects() {
         const heroScrim = heroTrack.querySelector<HTMLElement>("[data-hero-scrim]");
         const heroCopy = heroTrack.querySelector<HTMLElement>("[data-hero-copy]");
 
-        if (heroMedia) {
+        if (heroMedia && !coarsePointer) {
           gsap.to(heroMedia, {
             scale: 1.24,
             transformOrigin: "78% center",
@@ -77,8 +77,8 @@ export function ScrollEffects() {
             },
           });
         }
-        if (heroCopy) {
-          // React Bits BlurText and AnimatedContent handle the hero copy entrance.
+        if (heroCopy && !coarsePointer) {
+          // Keep the original scroll-linked copy drift on desktop only.
           gsap.to(heroCopy, {
             yPercent: 28,
             autoAlpha: 0.08,
