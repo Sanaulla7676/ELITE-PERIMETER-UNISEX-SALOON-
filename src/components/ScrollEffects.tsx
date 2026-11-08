@@ -98,7 +98,7 @@ export function ScrollEffects() {
         const parts = heading.querySelectorAll<HTMLElement>(".kicker, h2, p, .text-link");
         if (!parts.length) return;
         gsap.fromTo(parts,
-          { y: 26, autoAlpha: 0, filter: "blur(4px)" },
+          { y: coarsePointer ? 14 : 26, autoAlpha: 0, filter: "blur(4px)" },
           {
             y: 0,
             autoAlpha: 1,
@@ -125,7 +125,7 @@ export function ScrollEffects() {
           const items = group.querySelectorAll<HTMLElement>(config.items);
           if (!items.length) return;
           gsap.fromTo(items,
-            { y: config.y ?? 28, autoAlpha: 0, filter: "blur(3px)" },
+            { y: coarsePointer ? Math.min(18, config.y ?? 28) : (config.y ?? 28), autoAlpha: 0, filter: "blur(3px)" },
             {
               y: 0,
               autoAlpha: 1,
@@ -154,7 +154,7 @@ export function ScrollEffects() {
       gsap.utils.toArray<HTMLElement>(copySelector).forEach((copy) => {
         if (copy.closest(".home-faq-cta")) return;
         gsap.fromTo(copy,
-          { y: 34, autoAlpha: 0, filter: "blur(4px)" },
+          { y: coarsePointer ? 18 : 34, autoAlpha: 0, filter: "blur(4px)" },
           {
             y: 0,
             autoAlpha: 1,
@@ -183,7 +183,7 @@ export function ScrollEffects() {
 
         if (visual) {
           gsap.fromTo(visual,
-            { x: fromRight ? -42 : 42, y: 30, scale: 0.965, autoAlpha: 0 },
+            { x: coarsePointer ? 0 : (fromRight ? -42 : 42), y: coarsePointer ? 16 : 30, scale: coarsePointer ? 1 : 0.965, autoAlpha: 0 },
             { x: 0, y: 0, scale: 1, autoAlpha: 1, ease: "none", scrollTrigger: trigger },
           );
         }
@@ -195,7 +195,7 @@ export function ScrollEffects() {
         }
         if (copy) {
           gsap.fromTo(copy,
-            { x: fromRight ? -30 : 30, y: 22, autoAlpha: 0 },
+            { x: coarsePointer ? 0 : (fromRight ? -30 : 30), y: coarsePointer ? 12 : 22, autoAlpha: 0 },
             { x: 0, y: 0, autoAlpha: 1, ease: "none", scrollTrigger: trigger },
           );
         }
@@ -234,7 +234,7 @@ export function ScrollEffects() {
         } as const;
 
         gsap.fromTo(visual,
-          { x: fromRight ? 24 : -24, y: 44, scale: 0.975, autoAlpha: 0 },
+          { x: coarsePointer ? 0 : (fromRight ? 24 : -24), y: coarsePointer ? 22 : 44, scale: coarsePointer ? 1 : 0.975, autoAlpha: 0 },
           { x: 0, y: 0, scale: 1, autoAlpha: 1, ease: "none", scrollTrigger: trigger },
         );
 
@@ -252,7 +252,7 @@ export function ScrollEffects() {
       if (faqList) {
         const rows = faqList.querySelectorAll<HTMLElement>("details");
         gsap.fromTo(rows,
-          { y: 16, autoAlpha: 0 },
+          { y: coarsePointer ? 8 : 16, autoAlpha: 0 },
           {
             y: 0,
             autoAlpha: 1,
