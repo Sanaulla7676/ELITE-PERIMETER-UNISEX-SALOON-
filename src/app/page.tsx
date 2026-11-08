@@ -64,15 +64,7 @@ export default function HomePage() {
       </section>
 
       <section className="home-motion-loop" aria-label="Elite Perimeter salon motion identity">
-        <div className="home-motion-loop__frame">
-          <iframe
-            src="/animations/elite-perimeter-salon-loop.html?embed=1"
-            title="Elite Perimeter Unisex Salon animated brand identity"
-            loading="lazy"
-            allow="fullscreen"
-            allowFullScreen
-          />
-        </div>
+        <DeferredMotionFrame />
       </section>
 
       <div className="home-content-sheet">
