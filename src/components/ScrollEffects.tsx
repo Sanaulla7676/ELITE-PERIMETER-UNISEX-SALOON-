@@ -78,38 +78,7 @@ export function ScrollEffects() {
           });
         }
         if (heroCopy) {
-          const titleLines = heroCopy.querySelectorAll<HTMLElement>(".home-hero-brand-title .hero-title-line > span");
-          const description = heroCopy.querySelector<HTMLElement>(".home-hero-brand-description");
-
-          if (titleLines.length) {
-            gsap.fromTo(titleLines,
-              { yPercent: 112, autoAlpha: 0, filter: "blur(10px)" },
-              {
-                yPercent: 0,
-                autoAlpha: 1,
-                filter: "blur(0px)",
-                duration: 1.05,
-                stagger: 0.16,
-                delay: 0.18,
-                ease: "power4.out",
-                clearProps: "filter",
-              },
-            );
-          }
-          if (description) {
-            gsap.fromTo(description,
-              { y: 22, autoAlpha: 0, filter: "blur(5px)" },
-              {
-                y: 0,
-                autoAlpha: 1,
-                filter: "blur(0px)",
-                duration: 0.82,
-                delay: 0.62,
-                ease: "power3.out",
-                clearProps: "filter",
-              },
-            );
-          }
+          // React Bits BlurText and AnimatedContent handle the hero copy entrance.
           gsap.to(heroCopy, {
             yPercent: 28,
             autoAlpha: 0.08,
@@ -144,13 +113,8 @@ export function ScrollEffects() {
 
       // Related cards enter as a group, not as unrelated items firing at random.
       const revealGroups: RevealGroup[] = [
-        { selector: ".trust-strip-inner", items: ".trust-item", start: "top 94%", stagger: 0.075, y: 18 },
-        { selector: ".category-grid", items: ".category-tile", stagger: 0.095, y: 34 },
-        { selector: ".feature-grid", items: ".service-card", stagger: 0.075, y: 30 },
-        { selector: ".package-feature-grid", items: ".package-feature", stagger: 0.09, y: 32 },
         { selector: ".package-grid", items: ".package-card", stagger: 0.075, y: 28 },
         { selector: ".journey-steps", items: ".journey-step", stagger: 0.12, y: 26 },
-        { selector: ".blog-feature-grid", items: ".blog-feature-card", stagger: 0.09, y: 30 },
         { selector: ".contact-grid", items: ".contact-card, .address-card", stagger: 0.09, y: 28 },
         { selector: ".home-faq-cta", items: ".home-faq, .home-final-cta", stagger: 0.15, y: 34 },
         { selector: ".footer-top", items: ":scope > *", stagger: 0.08, y: 22 },
@@ -181,7 +145,6 @@ export function ScrollEffects() {
 
       // Long-form copy blocks on service, blog and location pages.
       const copySelector = [
-        ".journey-intro",
         ".split-feature-copy",
         ".home-keratin-mobile-copy",
         ".service-detail-content",

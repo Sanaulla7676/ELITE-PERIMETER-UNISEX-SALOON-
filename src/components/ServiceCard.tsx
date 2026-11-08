@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Service } from "@/lib/data";
 import { categories } from "@/lib/data";
 import { CategoryImage } from "@/components/Media";
+import GlareHover from "@/components/GlareHover";
 
 export function ServiceCard({ service }: { service: Service }) {
   const category = categories.find((item) => item.slug === service.category);
@@ -10,12 +11,14 @@ export function ServiceCard({ service }: { service: Service }) {
   return (
     <article className={`service-card service-card--${service.category}`}>
       <Link className="service-card-image-link" href={href} aria-label={`View ${service.name} details`}>
-        <CategoryImage
-          category={service.category}
-          serviceSlug={service.slug}
-          alt={`Illustrative service image for ${service.name}; not a verified client outcome.`}
-          showNote
-        />
+        <GlareHover width="100%" height="100%" className="service-card-glare" glareColor="#fffaf5" glareOpacity={0.22} glareSize={24} softness={0.7} transitionDuration={720} mode="hover" rimGlint={false}>
+          <CategoryImage
+            category={service.category}
+            serviceSlug={service.slug}
+            alt={`Illustrative service image for ${service.name}; not a verified client outcome.`}
+            showNote
+          />
+        </GlareHover>
       </Link>
       <div className="service-card-body">
         <div className="service-card-top">

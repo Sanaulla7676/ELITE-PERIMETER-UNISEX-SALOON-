@@ -5063,3 +5063,403 @@ a:hover .image-frame img, .service-card:hover .image-frame img { transform: scal
 .home-motion-loop + .home-content-sheet {
   margin-top: 0;
 }
+
+
+/* Focused contact actions: fixed on the right for desktop and mobile. */
+.floating-contact-actions {
+  position: fixed;
+  z-index: 150;
+  right: clamp(16px, 2.1vw, 30px);
+  bottom: clamp(20px, 3vh, 34px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  width: 154px;
+  pointer-events: none;
+}
+.floating-contact-actions .floating-contact-action {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px;
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid rgba(221, 200, 166, .42);
+  border-radius: 999px;
+  background: #642b43;
+  color: #fffaf5;
+  box-shadow: 0 9px 26px rgba(40, 25, 35, .18);
+  font: 700 9px/1.1 var(--sans);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .22s ease, box-shadow .22s ease, background .22s ease;
+}
+.floating-contact-actions .floating-contact-action--whatsapp {
+  min-height: 52px;
+  padding: 0 16px;
+}
+.floating-contact-actions .floating-contact-action--call {
+  background: #b89565;
+  border-color: #b89565;
+  color: #281923;
+}
+.floating-contact-actions .floating-contact-action--directions {
+  min-height: 44px;
+  background: rgba(250, 247, 241, .96);
+  border-color: rgba(75, 42, 61, .2);
+  color: #4b2a3d;
+}
+.floating-contact-actions .floating-contact-action svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.floating-contact-actions .floating-contact-action:focus-visible {
+  outline: 3px solid #c9a77d;
+  outline-offset: 4px;
+}
+.floating-contact-actions .floating-contact-action--whatsapp.star-border {
+  display: inline-flex;
+  padding: 0 16px;
+  margin: 0;
+  min-height: 52px;
+  border-radius: 999px;
+}
+.floating-contact-actions .floating-contact-action--whatsapp .star-border__light {
+  opacity: .72;
+}
+@media (hover: hover) and (pointer: fine) {
+  .floating-contact-actions .floating-contact-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(40, 25, 35, .24);
+  }
+  .floating-contact-actions .floating-contact-action--directions:hover {
+    background: #fffdf9;
+  }
+}
+@media (max-width: 780px) {
+  body { padding-bottom: 0 !important; }
+  .floating-contact-actions {
+    right: 11px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: 122px;
+    gap: 8px;
+  }
+  .floating-contact-actions .floating-contact-action,
+  .floating-contact-actions .floating-contact-action--whatsapp.star-border {
+    min-height: 46px;
+    padding-inline: 12px;
+    gap: 9px;
+    font-size: 8px;
+    letter-spacing: .055em;
+    box-shadow: 0 7px 19px rgba(40, 25, 35, .17);
+  }
+  .floating-contact-actions .floating-contact-action--directions {
+    min-height: 42px;
+  }
+  .floating-contact-actions .floating-contact-action svg {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+}
+@media (max-width: 380px) {
+  .floating-contact-actions { right: 9px; width: 112px; }
+  .floating-contact-actions .floating-contact-action,
+  .floating-contact-actions .floating-contact-action--whatsapp.star-border {
+    min-height: 44px;
+    padding-inline: 10px;
+    gap: 7px;
+    font-size: 7.5px;
+  }
+}
+
+/* Premium motion on existing hero artwork and React Bits text. */
+.home-hero-track--peach .home-hero-bg-image {
+  transform-origin: center center;
+  animation: ep-hero-slow-zoom 20s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes ep-hero-slow-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+.home-hero-track--peach .home-hero-brand-title .hero-title-line {
+  overflow: hidden;
+}
+.home-hero-track--peach .home-hero-brand-title .home-hero-blur-text {
+  display: flex;
+  width: 100%;
+  flex-wrap: nowrap !important;
+  align-items: baseline;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+}
+.home-hero-track--peach .home-hero-keyword {
+  display: block;
+  margin-top: 16px;
+  font: 600 clamp(9px, .9vw, 12px)/1.5 var(--sans);
+  letter-spacing: .12em;
+  text-transform: none;
+  color: #80534e;
+}
+.home-hero-track--peach .home-hero-description-reveal {
+  width: 100%;
+}
+.home-hero-track--peach .home-hero-brand-description {
+  max-width: 700px;
+}
+@media (max-width: 780px) {
+  .home-hero-track--peach .home-hero-keyword {
+    margin-top: 11px;
+    font-size: 9px;
+    letter-spacing: .085em;
+  }
+  .home-hero-track--peach .home-hero-brand-title .home-hero-blur-text {
+    white-space: nowrap;
+  }
+  .home-hero-track--peach .home-hero-brand-description {
+    font-size: 13px;
+    line-height: 1.65;
+    max-width: min(100%, 430px);
+  }
+  .home-hero-track { height: 114svh; min-height: 740px; }
+  .home-hero-sticky { min-height: 100svh; }
+  .home-hero-stage { padding-bottom: 118px; }
+}
+@media (max-width: 440px) {
+  .home-hero-track { min-height: 700px; }
+  .home-hero-track--peach .home-hero-keyword {
+    max-width: 100%;
+    font-size: 8px;
+  }
+}
+
+/* Small editorial service-name ribbon; all names come from the existing salon menu. */
+.service-name-marquee {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 15px 0 13px;
+  border-top: 1px solid rgba(100, 43, 67, .10);
+  border-bottom: 1px solid rgba(100, 43, 67, .10);
+  background: #fbf7f1;
+}
+.service-name-marquee > section {
+  overflow: hidden;
+}
+.service-name-marquee .scroller {
+  align-items: center;
+  gap: 28px;
+  font-family: var(--serif);
+  font-size: clamp(16px, 1.55vw, 22px);
+  font-weight: 500;
+  letter-spacing: .015em;
+  line-height: 1.35;
+  filter: none;
+}
+.service-name-marquee .scroller span {
+  flex-shrink: 0;
+}
+@media (max-width: 780px) {
+  .service-name-marquee { padding: 12px 0; }
+  .service-name-marquee .scroller { gap: 18px; font-size: 16px; }
+}
+
+/* React Bits GlareHover stays inside the existing service image frame. */
+.service-card-image-link { position: relative; }
+.service-card-glare {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.service-card-glare > .image-frame {
+  width: 100%;
+  height: auto;
+  min-height: 220px;
+}
+.service-card-glare .image-frame img {
+  transition: transform .85s cubic-bezier(.2,.72,.2,1);
+}
+.service-card-image-link:focus-visible {
+  outline: 3px solid #b89565;
+  outline-offset: 3px;
+}
+@media (max-width: 780px) {
+  .service-card-glare > .image-frame {
+    min-height: 185px;
+  }
+}
+
+/* React Bits reveal wrappers inherit the site's existing grid geometry. */
+.category-grid,
+.feature-grid,
+.package-feature-grid,
+.blog-feature-grid {
+  min-width: 0;
+  width: 100%;
+}
+.home-intro-scroll-reveal {
+  max-width: 640px;
+}
+.home-intro-scroll-text {
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+}
+.ep-scroll-progress,
+.ep-scroll-progress-fill {
+  pointer-events: none;
+}
+
+/* Layout guardrails for narrow screens and reduced-motion users. */
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+main, .home-content-sheet, .section, .container {
+  min-width: 0;
+}
+@media (max-width: 780px) {
+  .section { padding-inline: 0; }
+  .section-heading { min-width: 0; }
+  .category-grid, .feature-grid, .package-feature-grid, .blog-feature-grid {
+    min-width: 0;
+  }
+  .home-hero-stage, .home-hero-copy, .home-hero-brand-description {
+    min-width: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-track--peach .home-hero-bg-image {
+    animation: none !important;
+    transform: none !important;
+  }
+  .floating-contact-actions .floating-contact-action {
+    transition: none !important;
+  }
+}
+
+
+/* Hero typography: keep React Bits animated glyphs on a single clean line. */
+.home-hero-track--peach .home-hero-brand-title .hero-title-line {
+  width: 100%;
+  min-width: 0;
+}
+.home-hero-track--peach .home-hero-brand-title .home-hero-blur-text {
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100%;
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+  align-items: baseline;
+  gap: 0;
+}
+.home-hero-track--peach .home-hero-brand-title .home-hero-blur-text > span {
+  display: inline-flex;
+  flex: 0 0 auto;
+  white-space: pre;
+  letter-spacing: inherit;
+}
+
+/* Mobile hero: move the panoramic portrait above the copy instead of leaving
+   it floating in the centre of a tall empty peach panel. */
+@media (max-width: 780px) {
+  .home-hero-track--peach .home-hero-background {
+    display: block;
+  }
+  .home-hero-track--peach .home-hero-bg-media {
+    position: absolute !important;
+    inset: 74px -2% auto auto !important;
+    width: 100% !important;
+    height: min(43svh, 340px) !important;
+    aspect-ratio: auto !important;
+    transform: scale(1.01);
+    transform-origin: right center;
+  }
+  .home-hero-track--peach .home-hero-bg-image {
+    object-fit: contain !important;
+    object-position: right center !important;
+  }
+  .home-hero-track--peach .home-hero-stage {
+    align-items: flex-end;
+    padding-top: 74px;
+    padding-bottom: 118px;
+  }
+  .home-hero-track--peach .home-hero-copy {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 0 10px;
+  }
+  .home-hero-track--peach .home-hero-brand-title {
+    max-width: 100%;
+    font-size: clamp(40px, 10.5vw, 62px);
+    line-height: .96;
+    letter-spacing: .035em;
+  }
+  .home-hero-track--peach .home-hero-brand-title .hero-title-line,
+  .home-hero-track--peach .home-hero-brand-title .hero-title-line > span {
+    letter-spacing: .035em;
+  }
+  .home-hero-track--peach .home-hero-brand-description {
+    max-width: min(100%, 430px);
+    font-size: 13px;
+  }
+}
+@media (max-width: 440px) {
+  .home-hero-track--peach .home-hero-bg-media {
+    inset: 76px -2% auto auto !important;
+    width: 100% !important;
+    height: min(41svh, 310px) !important;
+  }
+  .home-hero-track--peach .home-hero-brand-title {
+    font-size: clamp(36px, 10.2vw, 44px);
+    letter-spacing: .025em;
+  }
+  .home-hero-track--peach .home-hero-brand-title .hero-title-line,
+  .home-hero-track--peach .home-hero-brand-title .hero-title-line > span {
+    letter-spacing: .025em;
+  }
+}
+
+@media (max-width: 780px) {
+  .home-hero-track--peach .home-hero-bg-image {
+    object-fit: cover !important;
+    object-position: right center !important;
+  }
+  .home-hero-track--peach .home-hero-stage {
+    padding-bottom: 158px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-track--peach .home-hero-description-reveal {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+.service-card-reveal {
+  width: 100%;
+  min-width: 0;
+}
+.service-card-reveal > .service-card {
+  width: 100%;
+  height: 100%;
+}

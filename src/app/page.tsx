@@ -1,5 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import BlurText from "@/components/BlurText";
+import ShinyText from "@/components/ShinyText";
+import AnimatedContent from "@/components/AnimatedContent";
+import FadeContent from "@/components/FadeContent";
+import ScrollReveal from "@/components/ScrollReveal";
+import ScrollVelocity from "@/components/ScrollVelocity";
+import CountUp from "@/components/CountUp";
 import { categories, services, site, packages, formatINR } from "@/lib/data";
 import { blogPosts } from "@/lib/blog-data";
 import { JsonLd } from "@/components/StructuredData";
@@ -41,8 +48,14 @@ export default function HomePage() {
 
           <div className="container home-hero-stage">
             <div className="home-hero-copy" data-hero-copy>
-              <h1 className="hero-title home-hero-brand-title"><span className="hero-title-line"><span>ELITE</span></span><span className="hero-title-line"><span>PERIMETER</span></span>{" "}<span className="home-hero-keyword">Unisex Salon in Ullal, Bengaluru</span></h1>
-              <p className="lead home-hero-brand-description">Elite Perimeter is a unisex salon in Ullal, Bengaluru, offering hair, facial and personal grooming services for men and women.</p>
+              <h1 className="hero-title home-hero-brand-title">
+                <span className="hero-title-line"><BlurText text="ELITE" className="home-hero-blur-text" animateBy="letters" direction="top" trigger="load" delay={95} stepDuration={0.3} blur={5} distance={20} color="#2f1d1b" /></span>
+                <span className="hero-title-line"><BlurText text="PERIMETER" className="home-hero-blur-text" animateBy="letters" direction="top" trigger="load" delay={95} stepDuration={0.3} blur={5} distance={20} color="#8b4858" /></span>
+                {" "}<span className="home-hero-keyword"><ShinyText text="Unisex Salon in Ullal, Bengaluru" color="#80534e" shineColor="#fffaf5" speed={5} shineWidth={28} softness={0.55} trigger="loop" /></span>
+              </h1>
+              <AnimatedContent direction="vertical" distance={24} duration={0.78} delay={0.28} ease="power3.out" threshold={0.2} trigger="mount" once initialOpacity={0} className="home-hero-description-reveal" style={{ visibility: "visible" }}>
+                <p className="lead home-hero-brand-description">Elite Perimeter is a unisex salon in Ullal, Bengaluru, offering hair, facial and personal grooming services for men and women.</p>
+              </AnimatedContent>
 
             </div>
 
@@ -68,9 +81,25 @@ export default function HomePage() {
         <div className="container trust-strip-inner">
           <div className="trust-item"><strong>Men & women</strong><span>Unisex salon services</span></div>
           <div className="trust-item"><strong>Ullal Main Road</strong><span>Jnana Ganga Nagar</span></div>
-          <div className="trust-item"><strong>28 services</strong><span>Across five menu groups</span></div>
+          <div className="trust-item"><strong><CountUp className="trust-count" to={28} from={0} duration={1.2} trigger="view" separator="," /> services</strong><span>Across five menu groups</span></div>
           <div className="trust-item"><strong>Since 2021</strong><span>Opening date supplied by the business</span></div>
         </div>
+      </section>
+
+      <section className="service-name-marquee" aria-label="Salon services">
+        <ScrollVelocity
+          texts={["Hair Cut   •   Hair Spa   •   Chocolate Facial   •   Keratin Spa   •   Bridal Facial   •   Manicure   •   Waxing"]}
+          velocity={22}
+          numCopies={5}
+          gap={30}
+          separator="✦"
+          fontSize="clamp(16px, 1.55vw, 22px)"
+          fontWeight={500}
+          color="#642b43"
+          pauseOnHover
+          fadeEdges
+          skewWithVelocity={0.12}
+        />
       </section>
 
       <section className="section reference-feature-section">
@@ -89,7 +118,7 @@ export default function HomePage() {
             <div><div className="kicker">Explore the menu</div><h2>Start with what you need.</h2></div>
             <p>Browse by service type, then open the individual service page for details and the questions to ask before booking.</p>
           </div>
-          <div className="category-grid">
+          <AnimatedContent className="category-grid" direction="horizontal" distance={90} duration={0.9} ease="power3.out" threshold={0.2} stagger={0.1} once initialOpacity={0}>
             {categories.map((category, index) => (
               <Link className="category-tile" href={`/services/${category.slug}/`} key={category.slug}>
                 <CategoryImage
@@ -104,7 +133,7 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
-          </div>
+          </AnimatedContent>
           <p className="image-disclaimer">Service imagery is for visual reference. It is not a record of an individual client's result or a claim about completed salon work.</p>
         </div>
       </section>
@@ -115,7 +144,25 @@ export default function HomePage() {
             <div><div className="kicker">Popular starting points</div><h2>Explore individual services.</h2></div>
             <Link className="text-link" href="/services/">View all 28 services <span aria-hidden="true">↗</span></Link>
           </div>
-          <div className="feature-grid">{featured.map((service) => <ServiceCard key={service.slug} service={service} />)}</div>
+          <div className="feature-grid">
+            {featured.map((service, index) => (
+              <AnimatedContent
+                key={service.slug}
+                className="service-card-reveal"
+                direction="horizontal"
+                reverse={index % 2 === 0}
+                distance={120}
+                duration={0.9}
+                delay={index * 0.1}
+                ease="power3.out"
+                threshold={0.2}
+                once
+                initialOpacity={0}
+              >
+                <ServiceCard service={service} />
+              </AnimatedContent>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -124,7 +171,9 @@ export default function HomePage() {
           <div className="journey-intro">
             <div className="kicker">A clearer way to plan</div>
             <h2>From first look to salon visit.</h2>
-            <p>Explore the menu at your pace, then speak with the team to confirm the details before travelling.</p>
+            <ScrollReveal enableBlur baseOpacity={0.18} blurStrength={3} baseOffset={18} stagger={0.025} smoothing={0.18} splitBy="words" effect="rise" mode="scrub" duration={0.9} containerClassName="home-intro-scroll-reveal" textClassName="home-intro-scroll-text">
+              Explore the menu at your pace, then speak with the team to confirm the details before travelling.
+            </ScrollReveal>
             <Link className="text-link" href="/contact/">Contact the salon <span aria-hidden="true">↗</span></Link>
           </div>
           <div className="journey-steps">
@@ -200,7 +249,7 @@ export default function HomePage() {
             <div><div className="kicker">Printed menu</div><h2>Salon packages & combinations.</h2></div>
             <Link className="text-link" href="/packages/">Compare all 14 packages <span aria-hidden="true">↗</span></Link>
           </div>
-          <div className="package-feature-grid">
+          <FadeContent className="package-feature-grid" blur={3} duration={0.82} ease="power3.out" threshold={0.18} stagger={0.1} once>
             {featuredPackages.map((item) => (
               <article className="package-feature" key={item.slug}>
                 <div className="kicker">{item.group}</div>
@@ -210,7 +259,7 @@ export default function HomePage() {
                 <Link className="text-link" href={`/packages/${item.slug}/`}>See package inclusions <span aria-hidden="true">↗</span></Link>
               </article>
             ))}
-          </div>
+          </FadeContent>
           <p className="muted" style={{ fontSize: 10, marginTop: 16 }}>Package rates are transcribed from the supplied posters. Confirm current availability before booking.</p>
         </div>
       </section>
@@ -218,9 +267,9 @@ export default function HomePage() {
       <section className="section">
         <div className="container">
           <div className="section-heading"><div><div className="kicker">Customer guides</div><h2>Useful answers before you book.</h2></div><Link className="text-link" href="/blog/">Read all 12 guides <span aria-hidden="true">↗</span></Link></div>
-          <div className="blog-feature-grid">
+          <FadeContent className="blog-feature-grid" blur={3} duration={0.8} ease="power3.out" threshold={0.18} stagger={0.1} once>
             {blogPosts.slice(0, 3).map((post) => <article className="blog-feature-card" key={post.slug}><span className="kicker">{post.category}</span><h3><Link href={`/blog/${post.slug}/`}>{post.h1}</Link></h3><p>{post.excerpt}</p><Link className="text-link" href={`/blog/${post.slug}/`}>Read guide <span aria-hidden="true">↗</span></Link></article>)}
-          </div>
+          </FadeContent>
         </div>
       </section>
 
