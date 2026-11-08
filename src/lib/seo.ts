@@ -38,6 +38,12 @@ export function businessJsonLd() {
     description: "A unisex beauty parlour on Ullal Main Road in Jnana Ganga Nagar, Bengaluru, offering hair, facial, waxing, threading, manicure and pedicure services.",
     telephone: "+918088442684",
     url: siteUrl,
+    hasMap: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d31105.243504821374!2d77.4686724!3d12.9619037!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3f085d4217ef%3A0xa1b17e65029e8e25!2sElite%20Perimeter%20Unisex%20Salon!5e0!3m2!1sen!2sin!4v1794167753769!5m2!1sen!2sin",
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 12.9619037,
+      longitude: 77.4686724,
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: "1st Floor, No. 39, Ullal Main Road, Near Mangalore Independent PU College, Above HDFC Bank, Annapurneshwari Layout, Jnana Ganga Nagar",
