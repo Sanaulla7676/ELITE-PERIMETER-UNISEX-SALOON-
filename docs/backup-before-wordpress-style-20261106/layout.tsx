@@ -1,0 +1,59 @@
+import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
+import "./globals.css";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { MobileActionBar } from "@/components/MobileActionBar";
+import { MotionSystem } from "@/components/MotionSystem";
+import { site } from "@/lib/data";
+import { siteUrl } from "@/lib/seo";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Unisex Salon in Ullal, Bengaluru | Elite Perimeter Unisex Salon",
+    template: "%s | Elite Perimeter Unisex Salon",
+  },
+  description: site.description,
+  applicationName: site.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: site.name,
+    images: [{ url: "/images/hero-salon.jpg", width: 1800, height: 1200, alt: "Illustrative salon interior image" }],
+    title: "Elite Perimeter Unisex Salon | Beauty Parlour in Ullal",
+    description: site.description,
+  },
+  robots: { index: true, follow: true },
+  verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#211F1C",
+};
+
+export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+  return (
+    <html lang="en-IN">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Poppins:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <MotionSystem />
+        <a className="skip-link" href="#main">Skip to content</a>
+        <Header />
+        <main id="main">{children}</main>
+        <Footer />
+        <MobileActionBar />
+      </body>
+    </html>
+  );
+}

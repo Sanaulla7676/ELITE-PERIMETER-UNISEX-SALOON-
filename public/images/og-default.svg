@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8f4ed"/><stop offset="1" stop-color="#eadfd4"/></linearGradient></defs>
+<rect width="1200" height="630" fill="url(#g)"/>
+<circle cx="940" cy="315" r="240" fill="none" stroke="#b48a51" stroke-width="2" opacity=".55"/><circle cx="940" cy="315" r="195" fill="none" stroke="#b48a51" stroke-width="1" opacity=".35"/>
+<text x="90" y="220" fill="#a96f80" font-family="Arial,sans-serif" font-size="20" font-weight="700" letter-spacing="6">BEAUTY · CARE · CONFIDENCE</text>
+<text x="90" y="315" fill="#2e1b29" font-family="Georgia,serif" font-size="67">Elite Perimeter</text>
+<text x="90" y="390" fill="#2e1b29" font-family="Georgia,serif" font-size="58">Unisex Salon</text>
+<text x="94" y="465" fill="#72666d" font-family="Arial,sans-serif" font-size="24">Ullal Main Road · Jnana Ganga Nagar · Bengaluru</text>
+<text x="940" y="343" text-anchor="middle" fill="#4a293d" font-family="Georgia,serif" font-size="110">EP</text>
+</svg>

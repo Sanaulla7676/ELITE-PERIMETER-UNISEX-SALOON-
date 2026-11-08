@@ -1,0 +1,29 @@
+service_name,category,slug,primary_keyword,path,indexing_status
+Hair Cut,hair,haircut-ullal,haircut in Ullal,/services/hair/haircut-ullal/,index after content/photo review
+Hair Spa,hair,hair-spa-ullal,hair spa in Ullal,/services/hair/hair-spa-ullal/,index after content/photo review
+Keratin Spa,hair,keratin-spa-ullal,keratin hair treatment in Ullal,/services/hair/keratin-spa-ullal/,index after content/photo review
+Botox Spa,hair,botox-spa-ullal,Botox Spa in Ullal,/services/hair/botox-spa-ullal/,noindex - confirm treatment name
+Cleanup,facials,face-cleanup-ullal,face cleanup in Ullal,/services/facials/face-cleanup-ullal/,index after content/photo review
+Chocolate Facial,facials,chocolate-facial-ullal,chocolate facial in Ullal,/services/facials/chocolate-facial-ullal/,index after content/photo review
+Whitening Facial,facials,whitening-facial-ullal,whitening facial in Ullal,/services/facials/whitening-facial-ullal/,index after content/photo review
+Korean Glass Facial,facials,korean-glass-facial-ullal,Korean Glass Facial in Ullal,/services/facials/korean-glass-facial-ullal/,index after content/photo review
+Luxury 24K Gold Facial,facials,gold-facial-ullal,24K Gold Facial in Ullal,/services/facials/gold-facial-ullal/,index after content/photo review
+Bridal Facial,facials,bridal-facial-ullal,bridal facial in Ullal,/services/facials/bridal-facial-ullal/,index after content/photo review
+Hyder Facial,facials,hyder-facial-ullal,Hyder Facial in Ullal,/services/facials/hyder-facial-ullal/,noindex - confirm treatment name
+Whitening Facial – 10 Steps,facials,10-step-whitening-facial-ullal,10-step whitening facial in Ullal,/services/facials/10-step-whitening-facial-ullal/,index after content/photo review
+Face De-Tan,facials,face-de-tan-ullal,face de-tan in Ullal,/services/facials/face-de-tan-ullal/,index after content/photo review
+Full Arms Waxing,waxing,full-arms-waxing-ullal,full arms waxing in Ullal,/services/waxing/full-arms-waxing-ullal/,index after content/photo review
+Underarms Waxing,waxing,underarms-waxing-ullal,underarms waxing in Ullal,/services/waxing/underarms-waxing-ullal/,index after content/photo review
+Half Legs Waxing,waxing,half-legs-waxing-ullal,half legs waxing in Ullal,/services/waxing/half-legs-waxing-ullal/,index after content/photo review
+Full Legs Waxing,waxing,full-legs-waxing-ullal,full legs waxing in Ullal,/services/waxing/full-legs-waxing-ullal/,index after content/photo review
+Chocolate Waxing,waxing,chocolate-waxing-ullal,chocolate waxing in Ullal,/services/waxing/chocolate-waxing-ullal/,index after content/photo review
+Eyebrow Threading,threading,eyebrow-threading-ullal,eyebrow threading in Ullal,/services/threading/eyebrow-threading-ullal/,index after content/photo review
+Upper Lip Threading,threading,upper-lip-threading-ullal,upper lip threading in Ullal,/services/threading/upper-lip-threading-ullal/,index after content/photo review
+Chin Threading,threading,chin-threading-ullal,chin threading in Ullal,/services/threading/chin-threading-ullal/,index after content/photo review
+Forehead Threading,threading,forehead-threading-ullal,forehead threading in Ullal,/services/threading/forehead-threading-ullal/,index after content/photo review
+Pedicure,nails,pedicure-ullal,pedicure in Ullal,/services/nails/pedicure-ullal/,index after content/photo review
+Manicure,nails,manicure-ullal,manicure in Ullal,/services/nails/manicure-ullal/,index after content/photo review
+Lavender Pedi Spa,nails,lavender-pedi-spa-ullal,Lavender Pedi Spa in Ullal,/services/nails/lavender-pedi-spa-ullal/,index after content/photo review
+Lavender Mani Spa,nails,lavender-mani-spa-ullal,Lavender Mani Spa in Ullal,/services/nails/lavender-mani-spa-ullal/,index after content/photo review
+Glass Shine Pedi Spa,nails,glass-shine-pedi-spa-ullal,Glass Shine Pedi Spa in Ullal,/services/nails/glass-shine-pedi-spa-ullal/,index after content/photo review
+Glass Shine Mani Spa,nails,glass-shine-mani-spa-ullal,Glass Shine Mani Spa in Ullal,/services/nails/glass-shine-mani-spa-ullal/,index after content/photo review

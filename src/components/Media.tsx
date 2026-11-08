@@ -1,0 +1,95 @@
+import Image from "next/image";
+import { getServiceHeroImage } from "@/lib/service-images";
+
+export function imageForCategory(category: string) {
+  const images: Record<string, string> = {
+    hair: "/images/services/haircut-ullal-01-closeup.webp",
+    facials: "/images/facial-service.jpg",
+    waxing: "/images/waxing-service.jpg",
+    threading: "/images/threading-service.jpg",
+    nails: "/images/nail-service.jpg",
+  };
+  return images[category] || "/images/hero-salon.jpg";
+}
+
+export function CategoryImage({
+  category,
+  alt,
+  className = "",
+  priority = false,
+  showNote = false,
+  serviceSlug,
+}: {
+  category: string;
+  alt: string;
+  className?: string;
+  priority?: boolean;
+  showNote?: boolean;
+  serviceSlug?: string;
+}) {
+  const serviceImage = serviceSlug ? getServiceHeroImage(serviceSlug) : null;
+
+  if (serviceSlug && !serviceImage) {
+    const needsConfirmation = serviceSlug === "botox-spa-ullal";
+    return (
+      <div
+        className={`image-frame image-frame--pending ${className}`}
+        role="img"
+        aria-label={`${alt} Photography not supplied`}
+      >
+        <div className="image-frame-pending-content">
+          <span>{needsConfirmation ? "SERVICE DETAILS TO CONFIRM" : "ORIGINAL SERVICE PHOTO"}</span>
+          <strong>{needsConfirmation ? "Confirm the treatment first" : "Salon photograph pending"}</strong>
+          <small>{needsConfirmation ? "Do not publish a treatment image until the menu name is verified." : "Add a salon-approved image for this exact service."}</small>
+        </div>
+      </div>
+    );
+  }
+
+  const src = serviceImage ?? imageForCategory(category);
+
+  return (
+    <div className={`image-frame ${className}`}>
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        priority={priority}
+        sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 640px"
+        style={{ objectFit: "cover" }}
+      />
+      {showNote && <span className="image-note">Illustrative image · replace with salon photo</span>}
+    </div>
+  );
+}
+
+export function VideoSlot({
+  title = "A look inside Elite Perimeter",
+  description = "The salon tour will appear here once original footage of the space and team is supplied.",
+}: {
+  title?: string;
+  description?: string;
+}) {
+  const videoUrl = process.env.NEXT_PUBLIC_SALON_VIDEO_URL;
+  return (
+    <div className="video-frame">
+      {videoUrl ? (
+        <video className="salon-video" controls playsInline preload="metadata" poster="/images/hero-salon.jpg">
+          <source src={videoUrl} type="video/mp4" />
+          Your browser does not support HTML video.
+        </video>
+      ) : (
+        <div className="video-placeholder">
+          <div className="video-placeholder-image" />
+          <div className="video-placeholder-copy">
+            <span className="eyebrow light">Salon film · Coming soon</span>
+            <h3>{title}</h3>
+            <p>{description}</p>
+            <small>This is a reserved media placement, not a playable video. Add an original MP4 using NEXT_PUBLIC_SALON_VIDEO_URL.</small>
+          </div>
+          <span className="video-placeholder-index" aria-hidden="true">EP / ULLAL</span>
+        </div>
+      )}
+    </div>
+  );
+}

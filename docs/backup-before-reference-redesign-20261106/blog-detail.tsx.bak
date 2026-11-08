@@ -1,0 +1,164 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { blogPosts, getBlogPost } from "@/lib/blog-data";
+import { getService } from "@/lib/data";
+import { packages } from "@/lib/data";
+import { getPackageEditorial } from "@/lib/package-editorial";
+import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/StructuredData";
+import { CategoryImage, imageForCategory } from "@/components/Media";
+
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return blogPosts.map((post) => ({ slug: post.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getBlogPost(slug);
+  if (!post) return {};
+  return {
+    title: post.title,
+    description: post.metaDescription,
+    alternates: { canonical: `/blog/${post.slug}/` },
+    openGraph: {
+      title: post.title,
+      description: post.metaDescription,
+      type: "article",
+      images: [{ url: absoluteUrl(imageForCategory(post.imageCategory)), alt: post.imageAlt }],
+    },
+  };
+}
+
+export default async function BlogArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const post = getBlogPost(slug);
+  if (!post) notFound();
+
+  const linkedServices = post.relatedServices.map(getService).filter(Boolean);
+  const linkedPackages = post.relatedPackages.map((slug) => packages.find((item) => item.slug === slug)).filter(Boolean);
+  const crumbs = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Guides", path: "/blog/" },
+    { name: post.h1, path: `/blog/${post.slug}/` },
+  ]);
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.h1,
+    description: post.metaDescription,
+    mainEntityOfPage: absoluteUrl(`/blog/${post.slug}/`),
+    publisher: { "@type": "Organization", name: "Elite Perimeter Unisex Salon" },
+    about: post.primaryKeyword,
+    articleSection: post.category,
+    image: absoluteUrl(imageForCategory(post.imageCategory)),
+  };
+
+  return (
+    <>
+      <JsonLd data={articleSchema} />
+      <JsonLd data={crumbs} />
+      <section className="page-hero blog-article-hero">
+        <div className="container">
+          <div className="breadcrumbs"><Link href="/">Home</Link><span>/</span><Link href="/blog/">Guides</Link><span>/</span><span>{post.category}</span></div>
+          <div className="eyebrow">{post.category} · Customer guide · Ullal</div>
+          <h1>{post.h1}</h1>
+          <p className="lead">{post.intro}</p>
+          <div className="blog-article-meta"><span>Elite Perimeter Unisex Salon</span><span>Practical customer guide</span><span>Ullal, Bengaluru</span></div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container blog-article-layout">
+          <article className="content-prose blog-article-content">
+            <div className="blog-painpoint">
+              <span className="kicker">The customer problem</span>
+              <p>{post.painPoint}</p>
+            </div>
+            <div className="blog-featured-media">
+              <CategoryImage category={post.imageCategory} alt={post.imageAlt} showNote />
+            </div>
+            {post.sections.map((section, index) => (
+              <section className="blog-content-section" id={`guide-section-${index + 1}`} key={section.heading}>
+                <div className="blog-section-index">0{index + 1}</div>
+                <h2>{section.heading}</h2>
+                {section.paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
+                {section.bullets && <ul>{section.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul>}
+              </section>
+            ))}
+            <div className="blog-takeaway">
+              <span className="kicker">Key takeaway</span>
+              <p>{post.takeaway}</p>
+            </div>
+            <section id="article-faqs" className="blog-faqs">
+              <h2>Frequently asked questions</h2>
+              <div className="faq-list">
+                {post.faqs.map((faq) => (
+                  <details key={faq.question}>
+                    <summary>{faq.question}</summary>
+                    <p>{faq.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+            <div className="blog-inline-cta">
+              <span className="eyebrow light">Plan your visit</span>
+              <h2>Have a service in mind?</h2>
+              <p>Check the exact menu listing and confirm the current price and availability with the salon.</p>
+              <a className="button-light" href="tel:+918088442684">Call the salon</a>
+            </div>
+          </article>
+
+          <aside className="blog-article-sidebar">
+            <div className="sidebar-sticky-block">
+              <div className="kicker">On this page</div>
+              <nav className="blog-toc" aria-label="Article sections">
+                {post.sections.map((section, index) => <a key={section.heading} href={`#guide-section-${index + 1}`}>{section.heading}</a>)}
+                <a href="#article-faqs">Frequently asked questions</a>
+              </nav>
+              <div className="sidebar-divider" />
+              <div className="kicker">Need the service menu?</div>
+              <p>Browse the individual service details and confirm the exact appointment with the salon.</p>
+              <Link className="text-link" href="/services/">Explore all services ↗</Link>
+              <div className="sidebar-divider" />
+              <Link className="text-link" href="/location/ullal/">Address and directions ↗</Link>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      {linkedServices.length > 0 && (
+        <section className="section section-paper">
+          <div className="container">
+            <div className="section-heading"><div><div className="kicker">Relevant service pages</div><h2>Explore the services mentioned.</h2></div><p>Open a service page for its menu description, price clarification and booking questions.</p></div>
+            <div className="blog-service-links">
+              {linkedServices.map((service) => <Link key={service!.slug} href={`/services/${service!.category}/${service!.slug}/`}><span>{service!.name}</span><small>{service!.h1}</small><b aria-hidden="true">↗</b></Link>)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {linkedPackages.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-heading"><div><div className="kicker">Printed combo packages</div><h2>Compare relevant combinations.</h2></div><Link className="text-link" href="/packages/">View all 14 packages ↗</Link></div>
+            <div className="blog-package-links">
+              {linkedPackages.map((item) => {
+                const editorial = getPackageEditorial(item!.slug);
+                return <Link className="blog-package-link" key={item!.slug} href={`/packages/${item!.slug}/`}><span className="kicker">{item!.group}</span><strong>{item!.name}</strong><span className="blog-package-price">₹{item!.price.toLocaleString("en-IN")}</span><small>{editorial?.intro ?? item!.description}</small><b aria-hidden="true">View package ↗</b></Link>;
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="section section-paper">
+        <div className="container blog-article-bottom">
+          <div><div className="kicker">Continue reading</div><h2>More salon guides.</h2></div>
+          <Link className="button-secondary" href="/blog/">Back to all guides</Link>
+        </div>
+      </section>
+    </>
+  );
+}

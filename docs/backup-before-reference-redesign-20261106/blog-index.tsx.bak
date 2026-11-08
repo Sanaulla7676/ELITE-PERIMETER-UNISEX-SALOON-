@@ -1,0 +1,68 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { blogPosts } from "@/lib/blog-data";
+
+export const metadata: Metadata = {
+  title: "Salon Guides & Beauty Care Advice in Ullal",
+  description: "Practical salon guides from Elite Perimeter Unisex Salon in Ullal: hair care, facial selection, threading, waxing, mani-pedi, hygiene, packages and bridal planning.",
+  alternates: { canonical: "/blog/" },
+  openGraph: { title: "Salon Guides & Beauty Care Advice | Elite Perimeter", description: "Explore practical guides for choosing salon services and planning your visit in Ullal." },
+};
+
+export default function BlogIndexPage() {
+  return (
+    <>
+      <section className="page-hero blog-hero">
+        <div className="container">
+          <div className="breadcrumbs"><Link href="/">Home</Link><span>/</span><span>Guides</span></div>
+          <div className="eyebrow">Useful information · Ullal</div>
+          <h1>Salon guides and beauty care advice in Ullal, Bengaluru.</h1>
+          <p className="lead">Explore salon guides in Ullal covering hair care, facial options, threading, waxing, nail care, salon hygiene and printed package inclusions. Each guide helps you prepare better questions before you book.</p>
+          <div className="hero-actions">
+            <Link className="button-primary" href="/services/">Explore salon services</Link>
+            <Link className="button-secondary" href="/packages/">Compare packages</Link>
+          </div>
+          <div className="services-hero-meta"><span><strong>12</strong> practical guides</span><span>Problem-solving topics</span><span>Ullal Main Road · Bengaluru</span></div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container">
+          <div className="section-heading">
+            <div><div className="kicker">The guide library</div><h2>Start with the question you have.</h2></div>
+            <p>Choose the topic closest to your concern. The guides explain what to check, what to ask the salon and which service pages contain the menu details.</p>
+          </div>
+          <div className="blog-grid">
+            {blogPosts.map((post, index) => (
+              <article className="blog-card" key={post.slug}>
+                <div className="blog-card-topline"><span className="kicker">{post.category}</span><span className="blog-card-number">GUIDE {String(index + 1).padStart(2, "0")}</span></div>
+                <h2><Link href={`/blog/${post.slug}/`}>{post.h1}</Link></h2>
+                <p>{post.excerpt}</p>
+                <div className="blog-card-pain"><strong>Question addressed</strong><span>{post.painPoint}</span></div>
+                <Link className="text-link" href={`/blog/${post.slug}/`}>Read the guide <span aria-hidden="true">↗</span></Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section section-paper">
+        <div className="container split-feature">
+          <div className="split-feature-copy">
+            <div className="kicker">From reading to booking</div>
+            <h2>Check the actual menu before you decide.</h2>
+            <p>Our service pages explain the printed salon menu, while the packages page lists the complete combination and its displayed price. Standalone prices not printed on the posters are left for the salon to confirm.</p>
+            <div className="hero-actions"><Link className="button-primary" href="/services/">Browse all services</Link><Link className="button-secondary" href="/contact/">Contact the salon</Link></div>
+          </div>
+          <div className="blog-guide-panel">
+            <span className="eyebrow">A useful booking checklist</span>
+            <ol>
+              <li>Confirm the exact service name and process.</li>
+              <li>Check every area and add-on included.</li>
+              <li>Ask for the current standalone rate if needed.</li>
+              <li>Confirm timing and availability before travelling.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

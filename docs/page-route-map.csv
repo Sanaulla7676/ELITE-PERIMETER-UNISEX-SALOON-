@@ -1,0 +1,40 @@
+route_type,page_name,primary_keyword,url,indexing_note
+homepage,Homepage,unisex salon in Ullal,/,Index after launch QA
+service_hub,Services,salon services in Ullal,/services/,Index
+category_hub,Hair services,hair salon in Ullal,/services/hair/,Index
+category_hub,Facial & skincare,facial salon in Ullal,/services/facials/,Index
+category_hub,Waxing,waxing salon in Ullal,/services/waxing/,Index
+category_hub,Threading,threading salon in Ullal,/services/threading/,Index
+category_hub,Manicure & pedicure,manicure and pedicure in Ullal,/services/nails/,Index
+service,Hair Cut,haircut in Ullal,/services/hair/haircut-ullal/,Index after photos and content verification
+service,Hair Spa,hair spa in Ullal,/services/hair/hair-spa-ullal/,Index after photos and content verification
+service,Keratin Spa,keratin hair treatment in Ullal,/services/hair/keratin-spa-ullal/,Index after photos and content verification
+service,Botox Spa,Botox Spa in Ullal,/services/hair/botox-spa-ullal/,Noindex until salon confirms exact service name/process
+service,Cleanup,face cleanup in Ullal,/services/facials/face-cleanup-ullal/,Index after photos and content verification
+service,Chocolate Facial,chocolate facial in Ullal,/services/facials/chocolate-facial-ullal/,Index after photos and content verification
+service,Whitening Facial,whitening facial in Ullal,/services/facials/whitening-facial-ullal/,Index after photos and content verification
+service,Korean Glass Facial,Korean Glass Facial in Ullal,/services/facials/korean-glass-facial-ullal/,Index after photos and content verification
+service,Luxury 24K Gold Facial,24K Gold Facial in Ullal,/services/facials/gold-facial-ullal/,Index after photos and content verification
+service,Bridal Facial,bridal facial in Ullal,/services/facials/bridal-facial-ullal/,Index after photos and content verification
+service,Hyder Facial,Hyder Facial in Ullal,/services/facials/hyder-facial-ullal/,Noindex until salon confirms exact service name/process
+service,Whitening Facial – 10 Steps,10-step whitening facial in Ullal,/services/facials/10-step-whitening-facial-ullal/,Index after photos and content verification
+service,Face De-Tan,face de-tan in Ullal,/services/facials/face-de-tan-ullal/,Index after photos and content verification
+service,Full Arms Waxing,full arms waxing in Ullal,/services/waxing/full-arms-waxing-ullal/,Index after photos and content verification
+service,Underarms Waxing,underarms waxing in Ullal,/services/waxing/underarms-waxing-ullal/,Index after photos and content verification
+service,Half Legs Waxing,half legs waxing in Ullal,/services/waxing/half-legs-waxing-ullal/,Index after photos and content verification
+service,Full Legs Waxing,full legs waxing in Ullal,/services/waxing/full-legs-waxing-ullal/,Index after photos and content verification
+service,Chocolate Waxing,chocolate waxing in Ullal,/services/waxing/chocolate-waxing-ullal/,Index after photos and content verification
+service,Eyebrow Threading,eyebrow threading in Ullal,/services/threading/eyebrow-threading-ullal/,Index after photos and content verification
+service,Upper Lip Threading,upper lip threading in Ullal,/services/threading/upper-lip-threading-ullal/,Index after photos and content verification
+service,Chin Threading,chin threading in Ullal,/services/threading/chin-threading-ullal/,Index after photos and content verification
+service,Forehead Threading,forehead threading in Ullal,/services/threading/forehead-threading-ullal/,Index after photos and content verification
+service,Pedicure,pedicure in Ullal,/services/nails/pedicure-ullal/,Index after photos and content verification
+service,Manicure,manicure in Ullal,/services/nails/manicure-ullal/,Index after photos and content verification
+service,Lavender Pedi Spa,Lavender Pedi Spa in Ullal,/services/nails/lavender-pedi-spa-ullal/,Index after photos and content verification
+service,Lavender Mani Spa,Lavender Mani Spa in Ullal,/services/nails/lavender-mani-spa-ullal/,Index after photos and content verification
+service,Glass Shine Pedi Spa,Glass Shine Pedi Spa in Ullal,/services/nails/glass-shine-pedi-spa-ullal/,Index after photos and content verification
+service,Glass Shine Mani Spa,Glass Shine Mani Spa in Ullal,/services/nails/glass-shine-mani-spa-ullal/,Index after photos and content verification
+packages,Salon packages,salon combo packages in Ullal,/packages/,Index
+location,Ullal location,unisex salon on Ullal Main Road,/location/ullal/,Index
+about,About,Elite Perimeter Unisex Salon,/about/,Index
+contact,Contact,contact Elite Perimeter Unisex Salon,/contact/,Index

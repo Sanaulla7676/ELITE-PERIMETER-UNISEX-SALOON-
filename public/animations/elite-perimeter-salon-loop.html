@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>if(new URLSearchParams(window.location.search).get('embed')==='1')document.documentElement.classList.add('embed-mode');</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elite Perimeter Unisex Salon | Motion Identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #0B0F19; }
+  body { font-family: "Plus Jakarta Sans", Arial, sans-serif; }
+  .player { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background: #0B0F19; }
+  .stage { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #0B0F19; }
+  .player:fullscreen { width: 100vw; height: 100vh; }
+  .player:fullscreen .stage, .player:fullscreen canvas { width: 100vw; height: 100vh; }
+  canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; background: #0B0F19; }
+  .controls { position: absolute; z-index: 5; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; width: min(620px, calc(100vw - 28px)); padding: 10px 12px; border: 1px solid rgba(252,234,232,.24); border-radius: 999px; background: rgba(13,17,23,.82); color: #FFFFFF; box-shadow: 0 8px 32px rgba(0,0,0,.28); backdrop-filter: blur(14px); font: 12px/1.2 "Plus Jakarta Sans", Arial, sans-serif; transition: opacity .25s ease; }
+  .controls button { flex: 0 0 auto; border: 1px solid rgba(252,234,232,.45); border-radius: 999px; background: #F9D7D3; color: #FFFFFF; padding: 9px 15px; cursor: pointer; font: 700 12px "Plus Jakarta Sans", Arial, sans-serif; }
+  .controls button:hover { background: #EABBB6; }
+  .controls input { min-width: 40px; flex: 1; accent-color: #F9D7D3; cursor: pointer; }
+  .clock { width: 78px; flex: 0 0 auto; text-align: right; color: #FCEAE8; font-variant-numeric: tabular-nums; }
+  .note { display: none; }
+  @media (max-width: 600px) {
+    .controls { gap: 6px; width: calc(100vw - 18px); padding: 8px; bottom: max(8px, env(safe-area-inset-bottom)); }
+    .controls button { padding: 8px 10px; font-size: 11px; }
+    .clock { width: 68px; font-size: 10px; }
+  }
+  @media (hover: none) { .controls { opacity: .9; } }
+
+  .embed-mode, .embed-mode body { width:100%; height:100%; overflow:hidden; }
+  .embed-mode .controls { display:none !important; }
+</style>
+</head>
+<body>
+<div class="player">
+  <div class="stage"><canvas id="motion" width="1920" height="1080" aria-label="Elite Perimeter Unisex Salon motion graphics preview"></canvas></div>
+  <div class="controls">
+    <button id="playPause" type="button">Pause</button>
+    <input id="scrub" type="range" min="0" max="15" step="0.01" value="0" aria-label="Animation timeline">
+    <span class="clock" id="clock">00:00 / 00:15</span>
+    <button id="fullscreen" type="button" aria-label="Enter fullscreen">Fullscreen</button>
+  </div>
+  <div class="note">Original BlueVisa typography, blue/white/navy palette and motion style · Full-viewport 1920 × 1080 canvas.</div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const W = 1920, H = 1080, DURATION = 15;
+  const canvas = document.getElementById('motion');
+  const ctx = canvas.getContext('2d');
+  const scrub = document.getElementById('scrub');
+  const playPause = document.getElementById('playPause');
+  const clock = document.getElementById('clock');
+  const fullscreenButton = document.getElementById('fullscreen');
+  const player = document.querySelector('.player');
+
+  // BRAND SETTINGS: update these values when the official logo, tagline or URL is available.
+  const BRAND = {
+    name: 'ELITE PERIMETER',
+    descriptor: 'UNISEX SALON',
+    tagline: 'Your style. Our signature.',
+    callToAction: 'BOOK YOUR APPOINTMENT',
+    website: '' // Add the official website here. Empty means the line is hidden.
+  };
+
+  // EDITABLE SERVICE LABELS: these are broad sample categories, not a verified copy of the salon's 28-service menu.
+  // Replace them with six exact service names from the approved salon list when available.
+  const SERVICES = [
+    { icon: '✂', name: 'Haircut & Styling', status: 'AVAILABLE' },
+    { icon: '✦', name: 'Hair Colour', status: 'AVAILABLE' },
+    { icon: '◉', name: 'Hair Treatments', status: 'AVAILABLE' },
+    { icon: '✧', name: 'Skin & Facial Care', status: 'AVAILABLE' },
+    { icon: '❋', name: 'Makeup & Occasion Looks', status: 'AVAILABLE' },
+    { icon: '◇', name: 'Men’s Grooming', status: 'AVAILABLE' }
+  ];
+
+  // Example service imagery. Replace with Elite Perimeter's own licensed photographs before commercial publishing.
+  const imageSources = [
+    'https://by-hairstylist.de/storage/2024/08/Hero2.png',
+    'https://www.welefulunisexsalon.com/images/blog/i3.jpg',
+    'https://khonaaesthetics.co.za/cdn/shop/files/image_fa4e8269-5240-441b-966b-d811174d10ba.png?v=1771924550&width=3840'
+  ];
+  const serviceImages = imageSources.map(src => {
+    const image = new Image();
+    image.src = src;
+    image.loaded = false;
+    image.onload = () => { image.loaded = true; };
+    image.onerror = () => { image.loaded = false; };
+    return image;
+  });
+
+  // Original BlueVisa palette retained exactly, with salon-specific objects and copy only.
+  // Exact original BlueVisa palette. No blue, beige, or alternate blue shades.
+  const C = {
+    blue: '#F9D7D3', navy: '#0D1117', white: '#FFFFFF',
+    ice: '#FCEAE8', gray: '#94A3B8', darkBg: '#0B0F19',
+    ivory: '#F8FAFC', paper: '#FFFFFF', line: '#FCEAE8'
+  };
+  const FONT = '"Plus Jakarta Sans", Arial, sans-serif';
+  const clamp = v => Math.max(0, Math.min(1, v));
+  const lerp = (a,b,t) => a + (b-a) * clamp(t);
+  const remap = (v,a,b) => clamp((v-a)/(b-a));
+  const easeOutExpo = t => t <= 0 ? 0 : t >= 1 ? 1 : 1 - Math.pow(2,-10*t);
+  const easeInExpo = t => t <= 0 ? 0 : t >= 1 ? 1 : Math.pow(2,10*(t-1));
+  const easeOutCubic = t => 1 - Math.pow(1-clamp(t),3);
+  const easeInCubic = t => Math.pow(clamp(t),3);
+  function spring(t, f=3.5, d=7) {
+    if (t <= 0) return 0;
+    if (t >= 1.5) return 1;
+    return 1 - Math.exp(-d*t) * Math.cos(2*Math.PI*f*t);
+  }
+  function rounded(x,y,w,h,r,fill,stroke=null,lineWidth=2) {
+    ctx.beginPath(); ctx.roundRect(x,y,w,h,r);
+    if (fill) { ctx.fillStyle=fill; ctx.fill(); }
+    if (stroke) { ctx.strokeStyle=stroke; ctx.lineWidth=lineWidth; ctx.stroke(); }
+  }
+  function text(str,x,y,size,weight,color,align='left',baseline='top') {
+    ctx.font = `${weight} ${size}px ${FONT}`; ctx.fillStyle=color;
+    ctx.textAlign=align; ctx.textBaseline=baseline; ctx.fillText(str,x,y);
+  }
+  function background(color) { ctx.fillStyle=color; ctx.fillRect(0,0,W,H); }
+  function dotGrid(alpha=1) {
+    // Original BlueVisa pale blue-grey dot pattern.
+    ctx.save(); ctx.fillStyle = `rgba(180,198,220,${alpha*.45})`;
+    const spacing = 34;
+    for (let x=spacing; x<W; x+=spacing) for (let y=spacing; y<H; y+=spacing) {
+      ctx.beginPath(); ctx.arc(x,y,1.4,0,Math.PI*2); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function drawImageCover(img,x,y,w,h,zoom=1, fallbackIndex=0) {
+    if (img && img.loaded && img.naturalWidth > 0) {
+      const iw=img.naturalWidth, ih=img.naturalHeight;
+      const scale=Math.max(w/iw,h/ih)*zoom;
+      const sw=w/scale, sh=h/scale;
+      const sx=(iw-sw)/2, sy=(ih-sh)/2;
+      ctx.drawImage(img,sx,sy,sw,sh,x,y,w,h);
+    } else {
+      const palettes=[[C.navy,C.blue],[C.darkBg,C.blue],[C.ice,C.blue]];
+      const p=palettes[fallbackIndex%palettes.length];
+      const g=ctx.createLinearGradient(x,y,x+w,y+h); g.addColorStop(0,p[0]); g.addColorStop(1,p[1]);
+      ctx.fillStyle=g; ctx.fillRect(x,y,w,h);
+      ctx.save(); ctx.globalAlpha=.18; ctx.strokeStyle='#FFFFFF'; ctx.lineWidth=3;
+      for(let k=0;k<12;k++){ctx.beginPath();ctx.arc(x+w*.5,y+h*.5,60+k*34,0,Math.PI*2);ctx.stroke();}
+      ctx.restore();
+      text(['THE ART OF HAIR','COLOUR & CARE','SKIN RITUALS'][fallbackIndex%3],x+w/2,y+h*.82,22,700,'rgba(255,255,255,.85)','center','middle');
+    }
+  }
+  function drawScissors(cx,cy,scale,angle=0,color=C.blue) {
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(angle); ctx.scale(scale,scale);
+    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle=color; ctx.lineWidth=10;
+    // handles
+    ctx.beginPath(); ctx.arc(-28,34,24,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(28,34,24,0,Math.PI*2); ctx.stroke();
+    // blades
+    ctx.lineWidth=9; ctx.beginPath(); ctx.moveTo(-12,18); ctx.lineTo(80,-52); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(12,18); ctx.lineTo(-80,-52); ctx.stroke();
+    ctx.fillStyle=color; ctx.beginPath(); ctx.arc(0,8,9,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  function drawSalonEmblem(cx,cy,r,alpha=1) {
+    ctx.save(); ctx.globalAlpha=alpha; ctx.translate(cx,cy);
+    // Blue orb, white orbital ring, and a white salon-scissors symbol.
+    ctx.fillStyle=C.blue; ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.fill();
+    ctx.save(); ctx.rotate(-.35);
+    ctx.strokeStyle='rgba(255,255,255,.9)'; ctx.lineWidth=r*.14;
+    ctx.beginPath(); ctx.arc(0,0,r*1.15,.6*Math.PI,1.8*Math.PI); ctx.stroke();
+    ctx.restore();
+    ctx.save(); ctx.scale(r/90,r/90); drawScissors(0,0,.56,-.18,C.white); ctx.restore();
+    ctx.restore();
+  }
+  function drawSalonChair(cx,cy,scale,alpha=1) {
+    ctx.save(); ctx.globalAlpha=alpha; ctx.translate(cx,cy); ctx.scale(scale,scale);
+    // Vanity mirror halo
+    ctx.strokeStyle='rgba(249,215,211,.55)'; ctx.lineWidth=5;
+    ctx.beginPath(); ctx.roundRect(-170,-330,340,420,165); ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=12;
+    for(let i=0;i<13;i++){const a=(-.85+i*.14);const x=Math.cos(a)*168;const y=-120+Math.sin(a)*207;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.stroke();}
+    // mirror stem and floor base
+    ctx.fillStyle=C.navy; ctx.fillRect(-7,90,14,150); rounded(-110,230,220,18,9,C.navy);
+    // chair shadow
+    ctx.fillStyle='rgba(22,20,18,.10)'; ctx.beginPath(); ctx.ellipse(0,245,205,28,0,0,Math.PI*2); ctx.fill();
+    // seat support
+    rounded(-16,120,32,112,12,C.navy); rounded(-82,218,164,18,9,C.navy);
+    // arm supports
+    ctx.strokeStyle='#F9D7D3'; ctx.lineWidth=12; ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-132,25);ctx.lineTo(-132,125);ctx.lineTo(-82,140);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(132,25);ctx.lineTo(132,125);ctx.lineTo(82,140);ctx.stroke();
+    // chair body
+    rounded(-132,-115,264,252,54,C.navy);
+    rounded(-149,-145,298,110,48,C.navy);
+    rounded(-112,-285,224,210,75,C.navy);
+    // seam highlights
+    ctx.strokeStyle='rgba(252,234,232,.48)';ctx.lineWidth=3;
+    ctx.beginPath();ctx.roundRect(-101,-265,202,172,60);ctx.stroke();
+    ctx.restore();
+  }
+  function drawAppointmentCard(cx,cy,angle,scale,alpha,stampProgress) {
+    ctx.save(); ctx.globalAlpha=alpha; ctx.translate(cx,cy); ctx.rotate(angle); ctx.scale(scale,scale);
+    const w=570,h=330;
+    ctx.shadowColor='rgba(0,40,100,.18)';ctx.shadowBlur=38;ctx.shadowOffsetX=8;ctx.shadowOffsetY=15;
+    rounded(-w/2,-h/2,w,h,22,C.paper);ctx.shadowColor='transparent';
+    rounded(-w/2,-h/2,w,62,[22,22,0,0],C.blue);
+    text('ELITE PERIMETER',-w/2+28,-h/2+20,17,800,C.paper);
+    text('APPOINTMENT CARD',w/2-28,-h/2+21,14,700,C.white,'right');
+    text('YOUR VISIT',-w/2+30,-h/2+95,14,700,C.gray);
+    text('A moment for you.',-w/2+30,-h/2+122,39,800,C.navy);
+    ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.setLineDash([5,7]);ctx.beginPath();ctx.moveTo(-w/2+28,8);ctx.lineTo(w/2-28,8);ctx.stroke();ctx.setLineDash([]);
+    const labels=[['SERVICE','PERSONAL CARE'],['EXPERIENCE','PREMIUM'],['STATUS','READY FOR YOU']];
+    labels.forEach((a,i)=>{const x=-w/2+30+i*178;text(a[0],x,42,11,700,C.gray);text(a[1],x,66,15,800,C.navy);});
+    if(stampProgress>0){const p=clamp(stampProgress);ctx.save();ctx.globalAlpha*=easeOutCubic(p);const s=lerp(1.6,1,p);ctx.translate(115,72);ctx.rotate(-.16);ctx.scale(s,s);rounded(-105,-28,210,56,9,'rgba(249,215,211,.08)',C.blue,4);rounded(-98,-21,196,42,6,null,C.blue,1.5);text('CONFIRMED',0,0,25,800,C.blue,'center','middle');ctx.restore();}
+    ctx.restore();
+  }
+  function drawPill(x,y,label) {
+    ctx.font=`700 17px ${FONT}`;const w=ctx.measureText(label).width+58;
+    rounded(x,y,w,46,23,C.ice,C.line,1.5);
+    ctx.fillStyle=C.blue;ctx.beginPath();ctx.arc(x+20,y+23,5,0,Math.PI*2);ctx.fill();
+    text(label,x+36,y+23,17,700,C.navy,'left','middle');
+    return w;
+  }
+
+  // SCENE 1 (0.0–2.05s): typography + appointment card.
+  function scene1(t) {
+    background(C.ivory); dotGrid(1);
+    const glow=ctx.createRadialGradient(W*.78,H*.42,0,W*.78,H*.42,650);
+    glow.addColorStop(0,'rgba(249,215,211,.12)');glow.addColorStop(1,'rgba(249,215,211,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    const p=spring(remap(t,0,.45),3.5,7.5), x=lerp(-520,125,p);
+    text('YOUR ONLY PLAN',x,215,21,700,C.blue);
+    text('Take',x,295,138,800,C.navy);
+    text('your',x,440,138,800,C.navy);
+    text('time.',x,585,138,800,C.blue);
+    const q=spring(remap(t,.25,.78),3,6.5);
+    const cardX=lerp(W+420,W*.72,q);
+    drawAppointmentCard(cardX,495,lerp(.2,.06,q),1,clamp(q*2),remap(t,1.36,1.62));
+    if(t>=1.68){const r=lerp(0,2600,easeInCubic(remap(t,1.68,2.05)));ctx.fillStyle=C.blue;ctx.beginPath();ctx.arc(cardX-65,465,r,0,Math.PI*2);ctx.fill();}
+  }
+
+  // The exact salon illustration supplied by the user, embedded so this HTML remains standalone.
+  // The still orb has been removed from the artwork; the same white node is drawn separately below.
+  const scene2OrbitArt = new Image();
+  scene2OrbitArt.src = '/animations/elite-perimeter-orbit-art-peach.png';;
+
+  // Smooth, constant-speed orbit around the visible outer arcs of the supplied artwork.
+  // The upper hidden section passes behind the salon emblem, so the moving dot fades behind it.
+  const ORBIT_ART_W = 1672, ORBIT_ART_H = 941;
+  const ORBIT_SX = W / ORBIT_ART_W, ORBIT_SY = H / ORBIT_ART_H;
+  const ORBIT_CURVES = [
+    { p0:[1266,505], p1:[1185,620], p2:[1000,745], p3:[850,745], visible:true },
+    { p0:[850,745], p1:[680,785], p2:[430,760], p3:[300,620], visible:true },
+    { p0:[300,620], p1:[270,510], p2:[410,395], p3:[575,370], visible:true, fadeOut:true },
+    { p0:[575,370], p1:[700,280], p2:[925,210], p3:[1128,245], visible:false },
+    { p0:[1128,245], p1:[1270,245], p2:[1340,350], p3:[1266,505], visible:true, fadeIn:true }
+  ];
+  function bezierPoint(curve, u) {
+    const v = 1-u, v2=v*v, u2=u*u;
+    return {
+      x: v2*v*curve.p0[0] + 3*v2*u*curve.p1[0] + 3*v*u2*curve.p2[0] + u2*u*curve.p3[0],
+      y: v2*v*curve.p0[1] + 3*v2*u*curve.p1[1] + 3*v*u2*curve.p2[1] + u2*u*curve.p3[1]
+    };
+  }
+  const ORBIT_METRICS = ORBIT_CURVES.map(curve => {
+    const samples = [bezierPoint(curve,0)];
+    const lengths = [0];
+    let length = 0, previous = samples[0];
+    for (let i=1;i<=240;i++) {
+      const point = bezierPoint(curve,i/240);
+      length += Math.hypot(point.x-previous.x,point.y-previous.y);
+      samples.push(point); lengths.push(length); previous=point;
+    }
+    return { curve, samples, lengths, length };
+  });
+  const ORBIT_TOTAL_LENGTH = ORBIT_METRICS.reduce((sum,item)=>sum+item.length,0);
+  function pointOnSalonOrbit(progress) {
+    let distance = clamp(progress) * ORBIT_TOTAL_LENGTH;
+    let metric = ORBIT_METRICS[ORBIT_METRICS.length-1];
+    for (const item of ORBIT_METRICS) {
+      if (distance <= item.length) { metric=item; break; }
+      distance -= item.length;
+    }
+    const values = metric.lengths;
+    let lo=0, hi=values.length-1;
+    while (lo<hi) { const mid=(lo+hi)>>1; if(values[mid]<distance)lo=mid+1;else hi=mid; }
+    const i=Math.max(1,lo), before=values[i-1], after=values[i];
+    const local = after===before ? 0 : (distance-before)/(after-before);
+    const a=metric.samples[i-1], b=metric.samples[i];
+    let alpha = metric.curve.visible ? 1 : 0;
+    const u = ((i-1)+local)/240;
+    if(metric.curve.fadeOut) alpha = 1 - easeOutCubic(remap(u,.84,1));
+    if(metric.curve.fadeIn) alpha = easeOutCubic(remap(u,0,.16));
+    return { x:lerp(a.x,b.x,local)*ORBIT_SX, y:lerp(a.y,b.y,local)*ORBIT_SY, alpha };
+  }
+  function drawOrbitNode(x,y,alpha=1) {
+    if(alpha<=0.001)return;
+    ctx.save(); ctx.globalAlpha=alpha;
+    const radius=29*ORBIT_SX, glowRadius=62*ORBIT_SX;
+    const glow=ctx.createRadialGradient(x,y,0,x,y,glowRadius);
+    glow.addColorStop(0,'rgba(255,255,255,.48)');
+    glow.addColorStop(.34,'rgba(255,255,255,.22)');
+    glow.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,y,glowRadius,0,Math.PI*2);ctx.fill();
+    ctx.shadowColor='rgba(255,255,255,.9)';ctx.shadowBlur=25*ORBIT_SX;
+    const fill=ctx.createRadialGradient(x-radius*.24,y-radius*.28,1,x,y,radius);
+    fill.addColorStop(0,'#FFFFFF');fill.addColorStop(.72,'#FFFFFF');fill.addColorStop(1,'#FCEAE8');
+    ctx.fillStyle=fill;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+
+  // SCENE 2 (2.05–4.1s): supplied salon emblem with one smooth orbiting white light.
+  function scene2(t) {
+    // Use only the exact artwork provided by the user, edge-to-edge in the original 16:9 stage.
+    if (scene2OrbitArt.complete && scene2OrbitArt.naturalWidth > 0) {
+      ctx.drawImage(scene2OrbitArt,0,0,W,H);
+    } else {
+      background(C.blue);
+    }
+
+    // Complete one constant-speed revolution before the existing transition begins.
+    const orbitProgress = remap(t,2.05,3.68);
+    const node = pointOnSalonOrbit(orbitProgress);
+    drawOrbitNode(node.x,node.y,node.alpha);
+
+    // Retain the original BlueVisa-style expanding white reveal into Scene 3.
+    if(t>=3.7){
+      const r=lerp(0,2500,easeOutExpo(remap(t,3.7,4.15)));
+      ctx.fillStyle=C.ivory;ctx.beginPath();ctx.arc(W/2,H/2,r,0,Math.PI*2);ctx.fill();
+    }
+  }
+
+  // SCENE 3 (4.0–8.75s): salon chair + service checklist.
+  function scene3(t) {
+    background(C.ivory);dotGrid(1);
+    if(t<5){const p=remap(t,4,4.9),r=lerp(25,600,easeOutExpo(p));ctx.strokeStyle=`rgba(249,215,211,${.28*(1-p)})`;ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(W*.28,H*.76,r,r*.17,0,0,Math.PI*2);ctx.stroke();}
+    const chairP=spring(remap(t,4,4.62),2.5,6);
+    const chairY=lerp(-260,H*.67,chairP);
+    drawSalonChair(W*.28,chairY,1.02,clamp(chairP*2));
+    const h1=easeOutExpo(remap(t,4.25,4.65));ctx.save();ctx.globalAlpha=h1;text('MAKE YOURSELF AT HOME',W*.28,83,20,700,C.blue,'center');ctx.restore();
+    const h2=easeOutExpo(remap(t,4.45,4.85));ctx.save();ctx.globalAlpha=h2;text('Your look,',W*.28,132,55,800,C.navy,'center');text('beautifully handled.',W*.28,198,55,800,C.blue,'center');ctx.restore();
+
+    const panelX=1160,panelY=335,panelW=650,rowH=67,gap=12;
+    SERVICES.forEach((service,i)=>{
+      const start=4.48+i*.48;
+      if(t<start)return;
+      const ap=spring(remap(t,start,start+.32),3.4,8);
+      const y=panelY+i*(rowH+gap)+lerp(28,0,ap);
+      ctx.save();ctx.globalAlpha=clamp(ap);
+      ctx.shadowColor='rgba(0,40,100,.12)';ctx.shadowBlur=24;ctx.shadowOffsetY=7;
+      rounded(panelX-panelW/2,y,panelW,rowH,17,C.paper,C.line,1.5);ctx.shadowColor='transparent';
+      rounded(panelX-panelW/2+15,y+11,44,44,13,C.ice);
+      text(service.icon,panelX-panelW/2+37,y+34,23,700,C.blue,'center','middle');
+      text(service.name,panelX-panelW/2+82,y+34,22,700,C.navy,'left','middle');
+      rounded(panelX+panelW/2-145,y+16,125,35,18,C.ice);
+      text(service.status,panelX+panelW/2-82,y+34,12,800,C.blue,'center','middle');
+      ctx.restore();
+    });
+    const count=SERVICES.filter((s,i)=>t>=4.48+i*.48+.28).length;
+    if(t>=4.5){for(let i=0;i<6;i++){ctx.fillStyle=i<count?C.blue:C.line;ctx.beginPath();ctx.arc(820+i*24,H-58,5,0,Math.PI*2);ctx.fill();}text(`${count} / 6 SERVICES`,910,H-58,15,700,C.gray,'left','middle');}
+    if(t>=7.9){const fp=spring(remap(t,7.9,8.25),3.5,7.5);ctx.save();ctx.globalAlpha=fp;rounded(1160,820,520,70,18,C.navy);text('YOUR SALON MOMENT STARTS HERE',1420,855,18,800,C.paper,'center','middle');ctx.restore();}
+    if(t>=8.45){const z=easeInExpo(remap(t,8.45,8.95));ctx.save();ctx.globalAlpha=z;ctx.fillStyle=C.darkBgBg;ctx.fillRect(0,0,W,H);ctx.restore();}
+  }
+
+  // SCENE 4 (8.75–12.0s): three salon service image reveals.
+  function scene4(t) {
+    background(C.darkBgBg);
+    const panels=[
+      {start:8.75,end:9.82,img:serviceImages[0],name:'HAIRCUT & STYLING',sub:'PRECISION. MOVEMENT. FINISH.'},
+      {start:9.75,end:10.84,img:serviceImages[1],name:'HAIR COLOUR',sub:'TONE. DEPTH. DIMENSION.'},
+      {start:10.75,end:11.98,img:serviceImages[2],name:'SKIN & FACIAL CARE',sub:'A MOMENT TO RESET.'}
+    ];
+    panels.forEach((s,i)=>{
+      if(t<s.start||t>=s.end+.16)return;
+      const ain=easeOutExpo(remap(t,s.start,s.start+.24));
+      const aout=t>=s.end?easeInCubic(remap(t,s.end,s.end+.16)):0;
+      const alpha=ain*(1-aout);
+      ctx.save();ctx.globalAlpha=alpha;
+      const zoom=lerp(1,1.065,remap(t,s.start,s.end));ctx.translate(W/2,H/2);ctx.scale(zoom,zoom);
+      drawImageCover(s.img,-W/2,-H/2,W,H,1,i);
+      ctx.restore();
+      const veil=ctx.createLinearGradient(0,H*.52,0,H);veil.addColorStop(0,'rgba(0,0,0,0)');veil.addColorStop(1,'rgba(0,0,0,.55)');ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=veil;ctx.fillRect(0,0,W,H);
+      text(`0${i+1} / 03`,120,H-220,17,700,C.ice);text(s.name,120,H-170,48,800,C.paper);text(s.sub,120,H-102,18,600,'rgba(255,255,255,.82)');ctx.restore();
+    });
+  }
+
+  // SCENE 5 (12.0–13.2s): service cards collapse into a blue identity orb.
+  function scene5(t) {
+    background(C.darkBg);
+    const intro=easeOutExpo(remap(t,11.85,12.2)),collapse=easeInExpo(remap(t,12.55,12.98));
+    if(intro>0&&collapse<1){ctx.save();ctx.globalAlpha=intro*(1-collapse);text('ONE SALON. EVERY DETAIL.',W/2,82,48,800,C.paper,'center');ctx.restore();}
+    const cw=440,ch=560,gap=36,total=3*cw+2*gap,sx=W/2-total/2;
+    const cards=[
+      {img:serviceImages[0],label:'CUT & STYLE'},
+      {img:serviceImages[1],label:'COLOUR'},
+      {img:serviceImages[2],label:'SKIN CARE'}
+    ];
+    cards.forEach((card,i)=>{
+      const bx=sx+cw/2+i*(cw+gap),by=H/2+45,cx=lerp(bx,W/2,collapse),cy=lerp(by,H/2,collapse),sc=lerp(1,.045,collapse),alpha=intro*(1-Math.pow(collapse,3));
+      if(alpha<=0)return;
+      ctx.save();ctx.globalAlpha=alpha;ctx.translate(cx,cy);ctx.scale(sc,sc);
+      ctx.beginPath();ctx.roundRect(-cw/2,-ch/2,cw,ch,24);ctx.clip();drawImageCover(card.img,-cw/2,-ch/2,cw,ch,1,i);
+      const g=ctx.createLinearGradient(0,80,0,ch/2);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.60)');ctx.fillStyle=g;ctx.fillRect(-cw/2,-ch/2,cw,ch);
+      text(card.label,0,ch/2-65,27,800,C.paper,'center','middle');ctx.restore();
+    });
+    if(collapse>.2){const p=remap(collapse,.2,1),r=lerp(8,34,easeOutExpo(p));ctx.save();ctx.fillStyle=C.blue;ctx.shadowColor=C.blue;ctx.shadowBlur=34;ctx.beginPath();ctx.arc(W/2,H/2,r,0,Math.PI*2);ctx.fill();ctx.restore();}
+    if(t>=12.88){const p=easeOutExpo(remap(t,12.88,13.22)),r=lerp(0,2550,p);ctx.fillStyle=C.ivory;ctx.beginPath();ctx.arc(W/2,H/2,r,0,Math.PI*2);ctx.fill();}
+  }
+
+  // SCENE 6 (13.0–15.0s): salon logo lockup and end title.
+  function scene6(t) {
+    background(C.ivory);dotGrid(.45);
+    const glow=ctx.createRadialGradient(W/2,H/2-80,0,W/2,H/2-80,620);glow.addColorStop(0,'rgba(249,215,211,.08)');glow.addColorStop(1,'rgba(249,215,211,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    const lp=spring(remap(t,13,13.48),3.5,7),r=48;
+    const brandWidth=620,total=r*2+30+brandWidth,startX=W/2-total/2,cy=H/2-105;
+    if(lp>0){ctx.save();ctx.globalAlpha=lp;drawSalonEmblem(startX+r,cy,r,lp);const blur=lerp(10,0,lp);if(blur>.4)ctx.filter=`blur(${blur}px)`;text(BRAND.name,startX+2*r+30,cy-10,68,800,C.navy,'left','middle');ctx.filter='none';text(BRAND.descriptor,startX+2*r+32,cy+48,20,700,C.blue,'left','middle');ctx.restore();}
+    const tp=easeOutExpo(remap(t,13.55,14.05));if(tp>0){ctx.save();ctx.globalAlpha=tp;text(BRAND.tagline,W/2,H/2+24,38,700,C.navy,'center','middle');ctx.restore();}
+    const labels=['HAIR','SKIN','GROOMING'];ctx.font=`700 18px ${FONT}`;const widths=labels.map(v=>ctx.measureText(v).width+58);const totalP=widths.reduce((a,b)=>a+b,0)+34*2;let x=W/2-totalP/2;
+    labels.forEach((label,i)=>{const p=spring(remap(t,13.9+i*.08,14.3+i*.08),3.5,7.5);if(p>0){ctx.save();ctx.globalAlpha=p;const y=H/2+112+lerp(20,0,p);drawPill(x,y,label);ctx.restore();}x+=widths[i]+34;});
+    const cp=easeOutExpo(remap(t,14.3,14.7));if(cp>0){ctx.save();ctx.globalAlpha=cp;text(BRAND.callToAction,W/2,H/2+205,19,700,C.blue,'center','top');if(BRAND.website)text(BRAND.website,W/2,H/2+247,16,600,C.gray,'center','top');ctx.restore();}
+  }
+
+  function render(t) {
+    ctx.save();ctx.clearRect(0,0,W,H);
+    if(t<2.05)scene1(t);
+    else if(t<4.1)scene2(t);
+    else if(t<8.75)scene3(t);
+    else if(t<12)scene4(t);
+    else if(t<13.2)scene5(t);
+    else scene6(t);
+    ctx.restore();
+  }
+
+  // Seek API retained for compatibility with a frame renderer.
+  window.seek = function(seconds) { const t=Math.max(0,Math.min(DURATION,Number(seconds)||0)); render(t); scrub.value=String(t); updateClock(t); };
+  let playing=true, last=performance.now(), elapsed=0, raf=0;
+  function updateClock(t){const s=Math.floor(t),cs=Math.floor((t-s)*100);clock.textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} / 00:15`;}
+  function loop(now){if(!playing)return;const dt=Math.min((now-last)/1000,.06);last=now;elapsed+=dt;if(elapsed>DURATION)elapsed=0;render(elapsed);scrub.value=String(elapsed);updateClock(elapsed);raf=requestAnimationFrame(loop);}
+  function play(){playing=true;last=performance.now();playPause.textContent='Pause';cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
+  function pause(){playing=false;playPause.textContent='Play';cancelAnimationFrame(raf);}
+  playPause.addEventListener('click',()=>playing?pause():play());
+  fullscreenButton.addEventListener('click', async () => {
+    try {
+      if (!document.fullscreenElement) {
+        if (player.requestFullscreen) await player.requestFullscreen();
+      } else if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    } catch (error) { console.warn('Fullscreen could not be enabled:', error); }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fullscreenButton.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
+    fullscreenButton.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
+  });
+  scrub.addEventListener('input',()=>{elapsed=Number(scrub.value);render(elapsed);updateClock(elapsed);});
+  window.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();playing?pause():play();}});
+  render(0);play();
+})();
+</script>
+</body>
+</html>

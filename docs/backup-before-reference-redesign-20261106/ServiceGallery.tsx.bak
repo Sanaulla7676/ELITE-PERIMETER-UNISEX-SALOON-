@@ -1,0 +1,46 @@
+import Image from "next/image";
+
+export function ServiceGallery({ slug, name }: { slug: string; name: string }) {
+  const basePath = `/images/services/${slug}`;
+
+  return (
+    <div className="service-photo-grid" aria-label={`${name} service image gallery`}>
+      <figure className="service-photo-card">
+        <div className="service-photo-frame service-photo-frame--large">
+          <Image
+            src={`${basePath}/01-closeup.webp`}
+            alt={`Illustrative close-up concept for ${name}; not a photograph of an actual Elite Perimeter client.`}
+            fill
+            sizes="(max-width: 780px) 50vw, 520px"
+          />
+        </div>
+        <figcaption><strong>Close-up view</strong><span>Illustrative concept</span></figcaption>
+      </figure>
+
+      <figure className="service-photo-card">
+        <div className="service-photo-frame">
+          <Image
+            src={`${basePath}/02-process.webp`}
+            alt={`Illustrative ${name} treatment-in-progress concept; actual salon process may differ.`}
+            fill
+            sizes="(max-width: 780px) 50vw, 420px"
+          />
+        </div>
+        <figcaption><strong>Service in progress</strong><span>Illustrative concept</span></figcaption>
+      </figure>
+
+      <figure className="service-photo-card service-photo-card--beforeafter">
+        <div className="service-photo-frame">
+          <Image
+            src={`${basePath}/03-before-after-upload-template.svg`}
+            alt={`Empty before-and-after photo template for ${name}; no client result is shown.`}
+            fill
+            sizes="(max-width: 780px) 50vw, 420px"
+            unoptimized
+          />
+        </div>
+        <figcaption><strong>Before &amp; after</strong><span>Real client photos pending</span></figcaption>
+      </figure>
+    </div>
+  );
+}

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1020" viewBox="0 0 1600 1020">
+<defs><linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf7f0"/><stop offset="1" stop-color="#efe4d9"/></linearGradient><style>
+.title{font:600 34px Georgia,serif;fill:#2d1b29}.label{font:700 18px Arial,sans-serif;fill:#4a293d}.text{font:14px Arial,sans-serif;fill:#74666d}.tiny{font:12px Arial,sans-serif;fill:#8a7d82}.box{fill:#fffdf9;stroke:#d9cbbd;stroke-width:1.5;rx:12}.accent{fill:#4a293d;rx:10}.gold{fill:#b48a51}.white{fill:#fffdf9}
+</style></defs>
+<rect width="1600" height="1020" fill="url(#bg2)"/>
+<text x="800" y="60" text-anchor="middle" class="title">Service Landing Page · Recommended Layout</text>
+<text x="800" y="91" text-anchor="middle" class="text">Example: Haircut in Ullal · Desktop structure (responsive and stacked on mobile)</text>
+<!-- desktop frame -->
+<rect x="70" y="135" width="980" height="825" class="box"/>
+<rect x="70" y="135" width="980" height="58" class="accent"/>
+<text x="100" y="171" class="white" style="font:700 17px Arial">ELITE PERIMETER</text>
+<text x="670" y="171" class="white" style="font:14px Arial">Home   Services   Packages   Our Salon   Location   Contact</text>
+<text x="104" y="227" class="tiny">Home / Services / Hair Services / Haircut</text>
+<text x="104" y="278" class="gold" style="font:700 12px Arial;letter-spacing:2px">HAIR SERVICES · ULLAL</text>
+<text x="104" y="330" class="title" style="font-size:40px">Haircut in Ullal, Bengaluru</text>
+<text x="104" y="366" class="text">Intro: primary service keyword + business + accurate location in the opening sentence.</text>
+<rect x="104" y="395" width="570" height="190" fill="#efe6dc" stroke="#d9cbbd" rx="12"/>
+<text x="389" y="476" text-anchor="middle" class="label">Original salon photograph</text>
+<text x="389" y="505" text-anchor="middle" class="tiny">Add a real haircut / salon image; no stock photo</text>
+<rect x="700" y="395" width="310" height="190" class="box"/>
+<text x="729" y="430" class="label">Quick enquiry</text>
+<text x="729" y="463" class="text">Individual price: enquire</text>
+<rect x="729" y="488" width="245" height="42" class="accent"/><text x="851" y="515" text-anchor="middle" class="white" style="font:700 13px Arial">CALL THE SALON</text>
+<text x="104" y="630" class="label">About this service</text>
+<text x="104" y="657" class="text">Original, useful explanation. Do not invent process, product or result claims.</text>
+<text x="104" y="700" class="label">What to discuss before booking</text>
+<text x="104" y="728" class="text">✓ Desired length / style / finish</text><text x="104" y="753" class="text">✓ Whether wash or styling is included</text><text x="104" y="778" class="text">✓ Current standalone rate</text>
+<text x="104" y="827" class="label">Related services</text>
+<rect x="104" y="847" width="260" height="80" class="box"/><text x="234" y="894" text-anchor="middle" class="text">Hair Spa</text>
+<rect x="378" y="847" width="260" height="80" class="box"/><text x="508" y="894" text-anchor="middle" class="text">Keratin Spa</text>
+<rect x="652" y="847" width="260" height="80" class="box"/><text x="782" y="894" text-anchor="middle" class="text">Hair packages</text>
+<!-- mobile -->
+<rect x="1120" y="135" width="410" height="825" class="box"/>
+<rect x="1120" y="135" width="410" height="58" class="accent"/>
+<text x="1145" y="171" class="white" style="font:700 15px Arial">EP · MENU ☰</text>
+<text x="1148" y="227" class="tiny">Home / Services / Hair</text>
+<text x="1148" y="279" class="gold" style="font:700 11px Arial;letter-spacing:1px">HAIR SERVICES · ULLAL</text>
+<text x="1148" y="320" class="title" style="font-size:27px">Haircut in Ullal</text>
+<rect x="1148" y="342" width="354" height="126" fill="#efe6dc" stroke="#d9cbbd" rx="10"/>
+<text x="1325" y="400" text-anchor="middle" class="label">Salon photograph</text>
+<text x="1148" y="500" class="text">Short introduction with the primary</text><text x="1148" y="522" class="text">keyword, business and location.</text>
+<rect x="1148" y="550" width="354" height="43" class="accent"/><text x="1325" y="578" text-anchor="middle" class="white" style="font:700 13px Arial">CALL TO ENQUIRE</text>
+<text x="1148" y="637" class="label">Service details</text><text x="1148" y="663" class="text">Useful content, not repeated keywords.</text>
+<text x="1148" y="705" class="label">Before you book</text><text x="1148" y="733" class="text">✓ Discuss style and length</text><text x="1148" y="757" class="text">✓ Confirm rate and inclusions</text>
+<text x="1148" y="809" class="label">Related services</text><text x="1148" y="837" class="text">Hair Spa · Keratin Spa</text>
+<rect x="1148" y="875" width="354" height="45" fill="#f0e8dd" stroke="#d9cbbd" rx="8"/><text x="1325" y="903" text-anchor="middle" class="text">Address · Map · Opening hours</text>
+</svg>

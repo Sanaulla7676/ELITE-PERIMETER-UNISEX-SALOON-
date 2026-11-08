@@ -1,0 +1,155 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { packages, formatINR } from "@/lib/data";
+import { packageEditorial } from "@/lib/package-editorial";
+import { getBlogPost } from "@/lib/blog-data";
+import { getService } from "@/lib/data";
+import { absoluteUrl, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd } from "@/components/StructuredData";
+import { SeoDataTable } from "@/components/SeoDataTable";
+
+export const dynamicParams = false;
+export function generateStaticParams() {
+  return packages.map((item) => ({ slug: item.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const item = packages.find((entry) => entry.slug === slug);
+  const editorial = packageEditorial[slug];
+  if (!item || !editorial) return {};
+  return {
+    title: editorial.h1,
+    description: editorial.metaDescription,
+    alternates: { canonical: `/packages/${item.slug}/` },
+    openGraph: { title: editorial.h1, description: editorial.metaDescription, type: "website" },
+  };
+}
+
+export default async function PackageDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const item = packages.find((entry) => entry.slug === slug);
+  const editorial = packageEditorial[slug];
+  if (!item || !editorial) notFound();
+
+  const linkedServices = editorial.serviceSlugs.map(getService).filter(Boolean);
+  const linkedBlogs = editorial.blogSlugs.map(getBlogPost).filter(Boolean);
+  const crumbs = breadcrumbJsonLd([
+    { name: "Home", path: "/" },
+    { name: "Packages", path: "/packages/" },
+    { name: item.name, path: `/packages/${item.slug}/` },
+  ]);
+  const packageSchema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: item.name,
+    description: editorial.metaDescription,
+    serviceType: "Salon combo package",
+    provider: { "@id": absoluteUrl("/#business") },
+    areaServed: { "@type": "Place", name: "Ullal, Bengaluru, Karnataka" },
+    url: absoluteUrl(`/packages/${item.slug}/`),
+    offers: { "@type": "Offer", priceCurrency: "INR", price: item.price },
+  };
+
+  return (
+    <>
+      <JsonLd data={packageSchema} />
+      <JsonLd data={crumbs} />
+      <div className="package-detail-page">
+      <section className="page-hero package-detail-hero">
+        <div className="container">
+          <div className="breadcrumbs"><Link href="/">Home</Link><span>/</span><Link href="/packages/">Packages</Link><span>/</span><span>{item.name}</span></div>
+          <div className="eyebrow">{item.group} · Printed salon menu · Ullal</div>
+          <h1>{editorial.h1}</h1>
+          <p className="lead">{editorial.intro}</p>
+          <div className="package-detail-price"><span>Printed package price</span><strong>{formatINR(item.price)}</strong><small>For the complete combination listed below</small></div>
+          <div className="hero-actions">
+            <a className="button-primary" href="tel:+918088442684">Enquire about this package</a>
+            <Link className="button-secondary" href="/packages/">Compare all packages</Link>
+          </div>
+          <p className="image-disclaimer">Price transcribed from the supplied menu poster. Confirm current availability and inclusions with the salon before booking.</p>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container package-detail-layout">
+          <article className="content-prose">
+            <div className="kicker">Package overview</div>
+            <h2>{editorial.decisionHeading}</h2>
+            <p>{editorial.decisionCopy}</p>
+
+            <h2>Services included in this package</h2>
+            <p>These are the services shown on the supplied printed menu for this package. Open an individual service to review its details and questions to ask before booking.</p>
+            <SeoDataTable
+              caption={`Printed inclusions for ${item.name}`}
+              headers={["Menu inclusion", "Service page"]}
+              rows={item.includes.map((label) => {
+                const matchingService = linkedServices.find((service) =>
+                  service?.name.toLowerCase() === label.toLowerCase()
+                );
+                return [
+                  label,
+                  matchingService
+                    ? <Link href={`/services/${matchingService.category}/${matchingService.slug}/`}>View {matchingService.name} details</Link>
+                    : "Confirm the exact menu detail with the salon",
+                ];
+              })}
+            />
+            {item.note && <div className="notice warning"><strong>Important:</strong> {item.note}</div>}
+
+            <h2>What to confirm before booking</h2>
+            <ul>{editorial.beforeBooking.map((question) => <li key={question}>{question}</li>)}</ul>
+
+            <h2>Package price and standalone services</h2>
+            <p>The printed price of {formatINR(item.price)} applies to the complete combination above. It must not be treated as the standalone price of any one facial, waxing, threading, manicure, pedicure or hair service included in the package.</p>
+            <p>If you need only one service, ask Elite Perimeter Unisex Salon for the current individual rate. The supplied poster does not provide a separate standalone price for every menu item.</p>
+
+            <h2>Visit Elite Perimeter in Ullal</h2>
+            <p>The salon is on Ullal Main Road in Jnana Ganga Nagar, near Mangalore Independent PU College and above HDFC Bank, Bengaluru 560056.</p>
+            <p><Link className="text-link" href="/location/ullal/">View location, nearby landmarks and directions ↗</Link></p>
+          </article>
+
+          <aside className="service-sidebar package-detail-sidebar">
+            <div className="kicker">Package summary</div>
+            <h3>{item.name}</h3>
+            <div className="package-price">{formatINR(item.price)}</div>
+            <div className="sidebar-divider" />
+            <div className="quickfacts">
+              <div className="quickfact"><span>Package type</span><strong>{item.group}</strong></div>
+              <div className="quickfact"><span>Included items</span><strong>{item.includes.length} listed services</strong></div>
+              <div className="quickfact"><span>Location</span><strong>Ullal, Bengaluru</strong></div>
+            </div>
+            <div className="sidebar-divider" />
+            <p className="muted">Confirm the package is currently available and ask whether any menu details have changed.</p>
+            <a className="button-primary" style={{ width: "100%" }} href="tel:+918088442684">Call 080884 42684</a>
+            <Link className="button-secondary" style={{ width: "100%", marginTop: 10 }} href="/contact/">Contact details</Link>
+          </aside>
+        </div>
+      </section>
+
+      {linkedServices.length > 0 && (
+        <section className="section section-paper">
+          <div className="container">
+            <div className="section-heading"><div><div className="kicker">Service details</div><h2>Read about each included service.</h2></div><Link className="text-link" href="/services/">Explore all services ↗</Link></div>
+            <div className="package-service-grid">
+              {linkedServices.map((service) => service && <Link href={`/services/${service.category}/${service.slug}/`} key={service.slug}><span>{service.name}</span><small>{service.h1}</small><b aria-hidden="true">↗</b></Link>)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {linkedBlogs.length > 0 && (
+        <section className="section">
+          <div className="container">
+            <div className="section-heading"><div><div className="kicker">Helpful guides</div><h2>Prepare before your visit.</h2></div><Link className="text-link" href="/blog/">Read all guides ↗</Link></div>
+            <div className="blog-link-grid">
+              {linkedBlogs.map((post) => post && <Link className="blog-link-card" href={`/blog/${post.slug}/`} key={post.slug}><span className="kicker">{post.category}</span><strong>{post.h1}</strong><small>{post.excerpt}</small><b>Read guide ↗</b></Link>)}
+            </div>
+          </div>
+        </section>
+      )}
+      </div>
+    </>
+  );
+}

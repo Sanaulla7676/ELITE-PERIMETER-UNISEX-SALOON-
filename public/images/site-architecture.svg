@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1160" viewBox="0 0 1600 1160">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf7f0"/><stop offset="1" stop-color="#eee3d8"/></linearGradient>
+  <linearGradient id="plum" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#59364c"/><stop offset="1" stop-color="#2d1b29"/></linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#382335" flood-opacity=".12"/></filter>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#a67e4e" stroke-width="1.4"/></marker>
+  <style>
+    .title{font:600 34px Georgia,serif;fill:#2d1b29}.sub{font:16px Arial,sans-serif;fill:#756872}.node{fill:#fffdf9;stroke:#d9cbbd;stroke-width:1.5;rx:14;filter:url(#shadow)}.dark{fill:url(#plum);stroke:#b18b57;stroke-width:1.6;rx:16;filter:url(#shadow)}.h{font:700 19px Arial,sans-serif;fill:#45283a}.p{font:14px Arial,sans-serif;fill:#70636b}.wh{font:700 20px Arial,sans-serif;fill:#fff}.wp{font:14px Arial,sans-serif;fill:#f0e7dc}.tiny{font:12px Arial,sans-serif;fill:#897a81}.line{stroke:#b28b57;stroke-width:2;fill:none;marker-end:url(#arrow)}.dash{stroke:#b28b57;stroke-width:1.7;stroke-dasharray:7 6;fill:none;marker-end:url(#arrow)}
+  </style>
+</defs>
+<rect width="1600" height="1160" fill="url(#bg)"/>
+<text x="800" y="62" text-anchor="middle" class="title">Elite Perimeter · Local SEO Website Architecture</text>
+<text x="800" y="94" text-anchor="middle" class="sub">Service hub → category hubs → individual service landing pages → enquiry</text>
+<!-- Top: GBP and site -->
+<rect x="80" y="135" width="365" height="125" class="dark"/>
+<text x="262" y="178" text-anchor="middle" class="wh">Google Business Profile</text>
+<text x="262" y="208" text-anchor="middle" class="wp">Beauty Parlour · reviews · photos · directions</text>
+<text x="262" y="232" text-anchor="middle" class="wp">Accurate address, hours and service menu</text>
+<rect x="590" y="135" width="420" height="125" class="dark"/>
+<text x="800" y="178" text-anchor="middle" class="wh">Website homepage /</text>
+<text x="800" y="208" text-anchor="middle" class="wp">Primary intent: Unisex Salon in Ullal</text>
+<text x="800" y="232" text-anchor="middle" class="wp">NAP · trust · main CTA · category links</text>
+<rect x="1155" y="135" width="365" height="125" class="node"/>
+<text x="1337" y="178" text-anchor="middle" class="h">Search Console</text>
+<text x="1337" y="208" text-anchor="middle" class="p">Queries · indexing · clicks · CTR</text>
+<text x="1337" y="232" text-anchor="middle" class="p">Refresh pages already ranking 3–20</text>
+<path d="M445 197 H580" class="line"/><path d="M1010 197 H1145" class="dash"/>
+<!-- hubs -->
+<rect x="590" y="315" width="420" height="88" class="node"/>
+<text x="800" y="350" text-anchor="middle" class="h">Services hub · /services/</text>
+<text x="800" y="377" text-anchor="middle" class="p">Overview, navigation and all service groups</text>
+<path d="M800 260 V305" class="line"/>
+<!-- category cards -->
+<g>
+<rect x="55" y="470" width="270" height="116" class="node"/><text x="190" y="507" text-anchor="middle" class="h">Hair services</text><text x="190" y="535" text-anchor="middle" class="p">/services/hair/</text><text x="190" y="560" text-anchor="middle" class="tiny">Haircut · Hair Spa · Keratin · Botox*</text>
+<rect x="365" y="470" width="270" height="116" class="node"/><text x="500" y="507" text-anchor="middle" class="h">Facial &amp; skincare</text><text x="500" y="535" text-anchor="middle" class="p">/services/facials/</text><text x="500" y="560" text-anchor="middle" class="tiny">Cleanup · facials · de-tan</text>
+<rect x="675" y="470" width="270" height="116" class="node"/><text x="810" y="507" text-anchor="middle" class="h">Waxing</text><text x="810" y="535" text-anchor="middle" class="p">/services/waxing/</text><text x="810" y="560" text-anchor="middle" class="tiny">Full arms · underarms · legs</text>
+<rect x="985" y="470" width="270" height="116" class="node"/><text x="1120" y="507" text-anchor="middle" class="h">Threading</text><text x="1120" y="535" text-anchor="middle" class="p">/services/threading/</text><text x="1120" y="560" text-anchor="middle" class="tiny">Eyebrow · upper lip · chin</text>
+<rect x="1295" y="470" width="250" height="116" class="node"/><text x="1420" y="507" text-anchor="middle" class="h">Nail care</text><text x="1420" y="535" text-anchor="middle" class="p">/services/nails/</text><text x="1420" y="560" text-anchor="middle" class="tiny">Manicure · pedicure · spa</text>
+</g>
+<path d="M800 403 V433 H190 V460" class="line"/><path d="M800 433 H500 V460" class="line"/><path d="M800 433 V460" class="line"/><path d="M800 433 H1120 V460" class="line"/><path d="M800 433 H1420 V460" class="line"/>
+<!-- page layer -->
+<text x="800" y="637" text-anchor="middle" class="h">Dedicated service landing pages · unique intent and useful original content</text>
+<text x="800" y="665" text-anchor="middle" class="sub">Each service page: keyword-led title + H1 + opening sentence · service facts · process to confirm · FAQs · location · contact CTA</text>
+<path d="M190 586 V705 H810 V728" class="line"/><path d="M500 586 V705" class="line"/><path d="M810 586 V728" class="line"/><path d="M1120 586 V705" class="line"/><path d="M1420 586 V705 H810" class="line"/>
+<rect x="260" y="730" width="1100" height="110" class="node"/>
+<text x="810" y="770" text-anchor="middle" class="h">28 service routes generated from the verified service catalogue</text>
+<text x="810" y="800" text-anchor="middle" class="p">Individual service pricing: enquire · package rates only where printed · ambiguous services excluded from index until confirmed</text>
+<!-- conversion and supporting pages -->
+<path d="M810 840 V877" class="line"/>
+<g>
+<rect x="70" y="900" width="330" height="112" class="node"/><text x="235" y="938" text-anchor="middle" class="h">Packages · /packages/</text><text x="235" y="969" text-anchor="middle" class="p">14 unique printed combo offers</text>
+<rect x="440" y="900" width="330" height="112" class="node"/><text x="605" y="938" text-anchor="middle" class="h">Ullal location · /location/ullal/</text><text x="605" y="969" text-anchor="middle" class="p">Address · map · real opening hours</text>
+<rect x="810" y="900" width="330" height="112" class="node"/><text x="975" y="938" text-anchor="middle" class="h">About &amp; contact</text><text x="975" y="969" text-anchor="middle" class="p">Identity · phone · directions</text>
+<rect x="1180" y="900" width="350" height="112" class="dark"/><text x="1355" y="938" text-anchor="middle" class="wh">Enquiry / appointment</text><text x="1355" y="969" text-anchor="middle" class="wp">Call · directions · real customer action</text>
+</g>
+<path d="M810 877 V885 H235 V890" class="line"/><path d="M810 877 V890 H605" class="line"/><path d="M810 877 V890 H975" class="line"/><path d="M810 877 H1355 V890" class="line"/>
+<text x="800" y="1080" text-anchor="middle" class="tiny">Technical foundation: crawlable links · metadata · canonical URLs · XML sitemap · robots.txt · BeautySalon schema · breadcrumbs · fast mobile pages</text>
+<text x="800" y="1103" text-anchor="middle" class="tiny">*Botox Spa and Hyder Facial must be confirmed with the salon before indexation or public claims.</text>
+</svg>
