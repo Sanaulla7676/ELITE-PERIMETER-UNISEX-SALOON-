@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { DeferredMotionFrame } from "@/components/DeferredMotionFrame";
 import ShinyText from "@/components/ShinyText";
 import AnimatedContent from "@/components/AnimatedContent";
 import FadeContent from "@/components/FadeContent";
