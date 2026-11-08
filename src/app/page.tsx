@@ -31,6 +31,11 @@ export default function HomePage() {
       <section className="home-hero-track home-hero-track--peach" data-home-hero-track>
         <div className="home-hero-sticky">
           <div className="home-hero-background" aria-hidden="true">
+            <div className="home-hero-scrim" data-hero-scrim />
+            <div className="home-hero-grain" />
+          </div>
+
+          <div className="container home-hero-stage">
             <div className="home-hero-bg-media" data-hero-media>
               <Image
                 className="home-hero-bg-image"
@@ -42,11 +47,6 @@ export default function HomePage() {
                 style={{ objectFit: "contain", objectPosition: "center" }}
               />
             </div>
-            <div className="home-hero-scrim" data-hero-scrim />
-            <div className="home-hero-grain" />
-          </div>
-
-          <div className="container home-hero-stage">
             <div className="home-hero-copy" data-hero-copy>
               <h1 className="hero-title home-hero-brand-title">
                 <span className="hero-title-line"><span className="home-hero-wordmark">ELITE</span></span>
@@ -277,7 +277,18 @@ export default function HomePage() {
               <Link className="button-secondary" href="/location/ullal/">Opening hours & location</Link>
             </div>
           </div>
-          <div className="map-panel"><iframe title="Map showing Ullal Main Road, Jnana Ganga Nagar, Bengaluru" src="https://www.google.com/maps?q=1st%20Floor%20No%2039%20Ullal%20Main%20Road%20Jnana%20Ganga%20Nagar%20Bengaluru%20560056&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade" /></div>
+          <div className="map-panel location-map-panel">
+            <iframe
+              title="Google Maps location of Elite Perimeter Unisex Salon, Ullal Main Road, Bengaluru"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d31105.243504821374!2d77.4686724!3d12.9619037!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae3f085d4217ef%3A0xa1b17e65029e8e25!2sElite%20Perimeter%20Unisex%20Salon!5e0!3m2!1sen!2sin!4v1794167753769!5m2!1sen!2sin"
+              width="600"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </div>
         </div>
       </section>
 
