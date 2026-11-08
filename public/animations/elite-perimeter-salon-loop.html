@@ -219,7 +219,35 @@
   // The exact salon illustration supplied by the user, embedded so this HTML remains standalone.
   // The still orb has been removed from the artwork; the same white node is drawn separately below.
   const scene2OrbitArt = new Image();
-  scene2OrbitArt.src = '/animations/elite-perimeter-orbit-art-peach.png';;
+  const ORBIT_BROWN = '#704B40';
+  let scene2OrbitBrownArt = null;
+  scene2OrbitArt.onload = () => {
+    const tinted = document.createElement('canvas');
+    tinted.width = scene2OrbitArt.naturalWidth;
+    tinted.height = scene2OrbitArt.naturalHeight;
+    const tintCtx = tinted.getContext('2d', { willReadFrequently: true });
+    if (!tintCtx) return;
+    tintCtx.drawImage(scene2OrbitArt, 0, 0);
+    const pixels = tintCtx.getImageData(0, 0, tinted.width, tinted.height);
+    const data = pixels.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const red = data[i], green = data[i + 1], blue = data[i + 2];
+      const max = Math.max(red, green, blue);
+      const min = Math.min(red, green, blue);
+      const saturation = max === 0 ? 0 : (max - min) / max;
+      const warmPeach = red > 178 && green > 112 && blue > 105 &&
+        red > green * 1.025 && red - blue > 15 && saturation > 0.075;
+      if (!warmPeach) continue;
+      const luminance = (red * .299 + green * .587 + blue * .114) / 255;
+      const shade = .88 + Math.max(0, Math.min(1, (luminance - .48) / .5)) * .14;
+      data[i] = Math.round(112 * shade);
+      data[i + 1] = Math.round(75 * shade);
+      data[i + 2] = Math.round(64 * shade);
+    }
+    tintCtx.putImageData(pixels, 0, 0);
+    scene2OrbitBrownArt = tinted;
+  };
+  scene2OrbitArt.src = '/animations/elite-perimeter-orbit-art-peach.png';
 
   // Smooth, constant-speed orbit around the visible outer arcs of the supplied artwork.
   // The upper hidden section passes behind the salon emblem, so the moving dot fades behind it.
@@ -270,16 +298,16 @@
     if(metric.curve.fadeIn) alpha = easeOutCubic(remap(u,0,.16));
     return { x:lerp(a.x,b.x,local)*ORBIT_SX, y:lerp(a.y,b.y,local)*ORBIT_SY, alpha };
   }
-  function drawOrbitNode(x,y,alpha=1) {
+  function drawOrbitNode(x,y,alpha=1,sizeScale=1) {
     if(alpha<=0.001)return;
     ctx.save(); ctx.globalAlpha=alpha;
-    const radius=29*ORBIT_SX, glowRadius=62*ORBIT_SX;
+    const radius=29*ORBIT_SX*sizeScale, glowRadius=62*ORBIT_SX*sizeScale;
     const glow=ctx.createRadialGradient(x,y,0,x,y,glowRadius);
     glow.addColorStop(0,'rgba(255,255,255,.48)');
     glow.addColorStop(.34,'rgba(255,255,255,.22)');
     glow.addColorStop(1,'rgba(255,255,255,0)');
     ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,y,glowRadius,0,Math.PI*2);ctx.fill();
-    ctx.shadowColor='rgba(255,255,255,.9)';ctx.shadowBlur=25*ORBIT_SX;
+    ctx.shadowColor='rgba(255,255,255,.9)';ctx.shadowBlur=25*ORBIT_SX*sizeScale;
     const fill=ctx.createRadialGradient(x-radius*.24,y-radius*.28,1,x,y,radius);
     fill.addColorStop(0,'#FFFFFF');fill.addColorStop(.72,'#FFFFFF');fill.addColorStop(1,'#F1E9DF');
     ctx.fillStyle=fill;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();
@@ -288,19 +316,16 @@
 
   // SCENE 2 (2.05–4.1s): supplied salon emblem with one smooth orbiting white light.
   function scene2(t) {
-    // Use only the exact artwork provided by the user, edge-to-edge in the original 16:9 stage.
-    if (scene2OrbitArt.complete && scene2OrbitArt.naturalWidth > 0) {
-      ctx.drawImage(scene2OrbitArt,0,0,W,H);
+    // Same supplied salon illustration and orbit, with a warm brown background.
+    if (scene2OrbitBrownArt) {
+      ctx.drawImage(scene2OrbitBrownArt,0,0,W,H);
     } else {
-      background(C.blue);
+      background(ORBIT_BROWN);
     }
-
-    // Complete one constant-speed revolution before the existing transition begins.
     const orbitProgress = remap(t,2.05,3.68);
     const node = pointOnSalonOrbit(orbitProgress);
     drawOrbitNode(node.x,node.y,node.alpha);
 
-    // Retain the original BlueVisa-style expanding white reveal into Scene 3.
     if(t>=3.7){
       const r=lerp(0,2500,easeOutExpo(remap(t,3.7,4.15)));
       ctx.fillStyle=C.ivory;ctx.beginPath();ctx.arc(W/2,H/2,r,0,Math.PI*2);ctx.fill();
@@ -424,13 +449,43 @@
     if(t>=1.68){const radius=lerp(0,2450,easeInCubic(remap(t,1.68,2.05)));ctx.fillStyle=C.blue;ctx.beginPath();ctx.arc(PW/2,PH*.56,radius,0,Math.PI*2);ctx.fill();}
   }
   function portraitScene2(t) {
-    portraitSurface(C.ice);const cx=PW/2,cy=900,rx=405,ry=560;
-    ctx.save();ctx.strokeStyle='rgba(185,149,101,.42)';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
-    ctx.strokeStyle='rgba(75,42,61,.14)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(cx,cy,rx*.84,ry*.84,0,0,Math.PI*2);ctx.stroke();ctx.restore();
-    const appear=easeOutExpo(remap(t,2.05,2.55));drawSalonEmblem(cx,cy,165,appear);
-    const orbit=remap(t,2.05,3.68)*Math.PI*2;drawOrbitNode(cx+Math.cos(orbit)*rx,cy+Math.sin(orbit)*ry,appear);
-    ctx.save();ctx.globalAlpha=appear;text('ELITE PERIMETER',cx,1570,51,800,C.navy,'center');text('UNISEX SALON',cx,1645,23,700,C.blue,'center');text('YOUR STYLE. OUR SIGNATURE.',cx,1750,20,600,C.gray,'center');ctx.restore();
-    if(t>=3.7){const radius=lerp(0,2600,easeOutExpo(remap(t,3.7,4.15)));ctx.fillStyle=C.ivory;ctx.beginPath();ctx.arc(cx,cy,radius,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle=ORBIT_BROWN;
+    ctx.fillRect(0,0,PW,PH);
+
+    if (scene2OrbitBrownArt) {
+      const artWidth=scene2OrbitBrownArt.width;
+      const artHeight=scene2OrbitBrownArt.height;
+      const coverScale=Math.max(PW/artWidth,PH/artHeight);
+      const coverWidth=artWidth*coverScale;
+      const coverHeight=artHeight*coverScale;
+      ctx.save();
+      ctx.filter='blur(34px)';
+      ctx.globalAlpha=.72;
+      ctx.drawImage(scene2OrbitBrownArt,(PW-coverWidth)/2,(PH-coverHeight)/2,coverWidth,coverHeight);
+      ctx.filter='none';
+      ctx.fillStyle='rgba(48,31,27,.54)';
+      ctx.fillRect(0,0,PW,PH);
+      ctx.restore();
+
+      // Keep the complete 16:9 salon illustration visible on the portrait canvas.
+      const portraitScale=PW/W;
+      const bandHeight=H*portraitScale;
+      const bandTop=(PH-bandHeight)/2;
+      ctx.drawImage(scene2OrbitBrownArt,0,bandTop,PW,bandHeight);
+
+      // Exact same Bézier route and playback timing as the desktop scene.
+      const orbitProgress=remap(t,2.05,3.68);
+      const node=pointOnSalonOrbit(orbitProgress);
+      drawOrbitNode(node.x*portraitScale,bandTop+node.y*portraitScale,node.alpha,portraitScale);
+    }
+
+    if(t>=3.7){
+      const radius=lerp(0,2500*(PW/W),easeOutExpo(remap(t,3.7,4.15)));
+      ctx.fillStyle=C.ivory;
+      ctx.beginPath();
+      ctx.arc(PW/2,PH/2,radius,0,Math.PI*2);
+      ctx.fill();
+    }
   }
   function portraitScene3(t) {
     portraitSurface();
@@ -494,7 +549,7 @@
 
   function portraitScene4(t) {
     portraitSurface(C.darkBg);
-    const panels=[{start:8.75,end:9.82,img:serviceImages[0],name:'HAIRCUT & STYLING',sub:'PRECISION. MOVEMENT. FINISH.'},{start:9.75,end:10.84,img:serviceImages[1],name:'HAIR CARE & TREATMENTS',sub:'TONE. DEPTH. DIMENSION.'},{start:10.75,end:11.98,img:serviceImages[2],name:'SKIN & FACIAL CARE',sub:'A MOMENT TO RESET.'}];
+    const panels=[{start:8.75,end:9.82,img:serviceImages[0],name:'HAIRCUT & STYLING',sub:'PRECISION. MOVEMENT. FINISH.'},{start:9.75,end:10.84,img:serviceImages[1],name:'HAIR COLOUR',sub:'TONE. DEPTH. DIMENSION.'},{start:10.75,end:11.98,img:serviceImages[2],name:'SKIN & FACIAL CARE',sub:'A MOMENT TO RESET.'}];
     panels.forEach((item,i)=>{if(t<item.start||t>=item.end+.16)return;const incoming=easeOutExpo(remap(t,item.start,item.start+.24));const outgoing=t>=item.end?easeInCubic(remap(t,item.end,item.end+.16)):0;const alpha=incoming*(1-outgoing);
       ctx.save();ctx.globalAlpha=alpha;const zoom=lerp(1,1.055,remap(t,item.start,item.end));ctx.translate(PW/2,PH/2);ctx.scale(zoom,zoom);drawImageCover(item.img,-PW/2,-PH/2,PW,PH,1,i);ctx.restore();
       const veil=ctx.createLinearGradient(0,PH*.58,0,PH);veil.addColorStop(0,'rgba(40,25,35,0)');veil.addColorStop(1,'rgba(40,25,35,.78)');
@@ -515,7 +570,7 @@
     const startY=(PH-total)/2+65;
     const cards=[
       {img:serviceImages[0],label:'CUT & STYLE'},
-      {img:serviceImages[1],label:'HAIR CARE'},
+      {img:serviceImages[1],label:'COLOUR'},
       {img:serviceImages[2],label:'SKIN CARE'}
     ];
     cards.forEach((card,i)=>{
