@@ -1,49 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>if(new URLSearchParams(window.location.search).get('embed')==='1')document.documentElement.classList.add('embed-mode');</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Elite Perimeter Unisex Salon | Motion Identity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; }
   html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #FAF7F1; }
-  body { font-family: "Plus Jakarta Sans", Arial, sans-serif; }
+  body { font-family: "Poppins", Arial, sans-serif; }
   .player { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background: #FAF7F1; }
   .stage { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #FAF7F1; }
   .player:fullscreen { width: 100vw; height: 100vh; }
   .player:fullscreen .stage, .player:fullscreen canvas { width: 100vw; height: 100vh; }
   canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; background: #FAF7F1; }
-  .controls { position: absolute; z-index: 5; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; width: min(620px, calc(100vw - 28px)); padding: 10px 12px; border: 1px solid rgba(185,149,101,.38); border-radius: 999px; background: rgba(40,25,35,.94); color: #FFFDF9; box-shadow: 0 8px 32px rgba(40,25,35,.20); backdrop-filter: blur(10px); font: 12px/1.2 "Plus Jakarta Sans", Arial, sans-serif; transition: opacity .25s ease; }
-  .controls button { flex: 0 0 auto; border: 1px solid rgba(185,149,101,.65); border-radius: 999px; background: #B89565; color: #281923; padding: 9px 15px; cursor: pointer; font: 700 12px "Plus Jakarta Sans", Arial, sans-serif; }
-  .controls button:hover { background: #A9767C; }
-  .controls input { min-width: 40px; flex: 1; accent-color: #B89565; cursor: pointer; }
-  .clock { width: 78px; flex: 0 0 auto; text-align: right; color: #F1E9DF; font-variant-numeric: tabular-nums; }
-  .note { display: none; }
-  @media (max-width: 600px) {
-    .controls { gap: 6px; width: calc(100vw - 18px); padding: 8px; bottom: max(8px, env(safe-area-inset-bottom)); }
-    .controls button { padding: 8px 10px; font-size: 11px; }
-    .clock { width: 68px; font-size: 10px; }
-  }
-  @media (hover: none) { .controls { opacity: .9; } }
-
-  .embed-mode, .embed-mode body { width:100%; height:100%; overflow:hidden; }
-  .embed-mode .controls { display:none !important; }
 </style>
 </head>
 <body>
 <div class="player">
   <div class="stage"><canvas id="motion" width="1920" height="1080" aria-label="Elite Perimeter Unisex Salon motion graphics preview"></canvas></div>
-  <div class="controls">
-    <button id="playPause" type="button">Pause</button>
-    <input id="scrub" type="range" min="0" max="15" step="0.01" value="0" aria-label="Animation timeline">
-    <span class="clock" id="clock">00:00 / 00:15</span>
-    <button id="fullscreen" type="button" aria-label="Enter fullscreen">Fullscreen</button>
-  </div>
-  <div class="note">Original BlueVisa typography, blue/white/navy palette and motion style · Full-viewport 1920 × 1080 canvas.</div>
 </div>
 <script>
 (() => {
@@ -55,11 +32,6 @@
   canvas.height = portrait ? PH : H;
   const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
   ctx.imageSmoothingEnabled = true;
-  const scrub = document.getElementById('scrub');
-  const playPause = document.getElementById('playPause');
-  const clock = document.getElementById('clock');
-  const fullscreenButton = document.getElementById('fullscreen');
-  const player = document.querySelector('.player');
 
   // BRAND SETTINGS: update these values when the official logo, tagline or URL is available.
   const BRAND = {
@@ -515,32 +487,30 @@
   function syncCanvasOrientation(){const nextPortrait=window.matchMedia('(max-width: 780px)').matches;if(nextPortrait===portrait)return;portrait=nextPortrait;canvas.width=portrait?PW:W;canvas.height=portrait?PH:H;lastRenderAt=0;render(elapsed);}
   window.addEventListener('resize',syncCanvasOrientation,{passive:true});
 
-  // Seek API retained for compatibility with a frame renderer.
-  window.seek = function(seconds) { const t=Math.max(0,Math.min(DURATION,Number(seconds)||0)); render(t); scrub.value=String(t); updateClock(t); };
   const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let playing=false,last=performance.now(),elapsed=0,raf=0;
-  function updateClock(t){const s=Math.floor(t);clock.textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} / 00:15`;}
-  function loop(now){if(!playing)return;const dt=Math.min((now-last)/1000,.06);last=now;elapsed+=dt;if(elapsed>DURATION)elapsed=0;const frameInterval=portrait?1000/30:1000/60;if(now-lastRenderAt>=frameInterval){render(elapsed);scrub.value=String(elapsed);updateClock(elapsed);lastRenderAt=now;}raf=requestAnimationFrame(loop);}
-  function play(){playing=true;last=performance.now();lastRenderAt=0;playPause.textContent='Pause';cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
-  function pause(){playing=false;playPause.textContent='Play';cancelAnimationFrame(raf);}
-  playPause.addEventListener('click',()=>playing?pause():play());
-  fullscreenButton.addEventListener('click', async () => {
-    try {
-      if (!document.fullscreenElement) {
-        if (player.requestFullscreen) await player.requestFullscreen();
-      } else if (document.exitFullscreen) {
-        await document.exitFullscreen();
-      }
-    } catch (error) { console.warn('Fullscreen could not be enabled:', error); }
-  });
-  document.addEventListener('fullscreenchange', () => {
-    fullscreenButton.textContent = document.fullscreenElement ? 'Exit Fullscreen' : 'Fullscreen';
-    fullscreenButton.setAttribute('aria-label', document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen');
-  });
-  scrub.addEventListener('input',()=>{elapsed=Number(scrub.value);render(elapsed);updateClock(elapsed);});
-  window.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();playing?pause():play();}});
+  function loop(now) {
+    if(!playing)return;
+    const dt=Math.min((now-last)/1000,.06);
+    last=now;
+    elapsed+=dt;
+    if(elapsed>DURATION)elapsed=0;
+    const frameInterval=portrait?1000/30:1000/60;
+    if(now-lastRenderAt>=frameInterval) {
+      render(elapsed);
+      lastRenderAt=now;
+    }
+    raf=requestAnimationFrame(loop);
+  }
+  function play() {
+    playing=true;
+    last=performance.now();
+    lastRenderAt=0;
+    cancelAnimationFrame(raf);
+    raf=requestAnimationFrame(loop);
+  }
   render(reduceMotion?14.99:0);
-  if(!reduceMotion)play();else playPause.textContent='Play';
+  if(!reduceMotion)play();
 })();
 </script>
 </body>
