@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import BlurText from "@/components/BlurText";
 import ShinyText from "@/components/ShinyText";
 import AnimatedContent from "@/components/AnimatedContent";
 import FadeContent from "@/components/FadeContent";
@@ -49,8 +48,8 @@ export default function HomePage() {
           <div className="container home-hero-stage">
             <div className="home-hero-copy" data-hero-copy>
               <h1 className="hero-title home-hero-brand-title">
-                <span className="hero-title-line"><BlurText text="ELITE" className="home-hero-blur-text" animateBy="letters" direction="top" trigger="load" delay={95} stepDuration={0.3} blur={5} distance={20} color="#2f1d1b" /></span>
-                <span className="hero-title-line"><BlurText text="PERIMETER" className="home-hero-blur-text" animateBy="letters" direction="top" trigger="load" delay={95} stepDuration={0.3} blur={5} distance={20} color="#8b4858" /></span>
+                <span className="hero-title-line"><span className="home-hero-wordmark">ELITE</span></span>
+                <span className="hero-title-line"><span className="home-hero-wordmark">PERIMETER</span></span>
                 {" "}<span className="home-hero-keyword"><ShinyText text="Unisex Salon in Ullal, Bengaluru" color="#80534e" shineColor="#fffaf5" speed={5} shineWidth={28} softness={0.55} trigger="loop" /></span>
               </h1>
               <AnimatedContent direction="vertical" distance={24} duration={0.78} delay={0.28} ease="power3.out" threshold={0.2} trigger="mount" once initialOpacity={0} className="home-hero-description-reveal" style={{ visibility: "visible" }}>
@@ -69,7 +68,7 @@ export default function HomePage() {
           <iframe
             src="/animations/elite-perimeter-salon-loop.html?embed=1"
             title="Elite Perimeter Unisex Salon animated brand identity"
-            loading="eager"
+            loading="lazy"
             allow="fullscreen"
             allowFullScreen
           />
