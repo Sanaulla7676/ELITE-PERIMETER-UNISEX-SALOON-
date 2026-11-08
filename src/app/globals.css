@@ -5526,13 +5526,6 @@ main, .home-content-sheet, .section, .container {
 
 
 
-/* Desktop image layer: original full-viewport artwork positioning is retained. */
-.home-hero-track--peach .home-hero-stage > .home-hero-bg-media {
-  position:absolute; z-index:0; left:50%; top:50%; right:auto; bottom:auto;
-  width:100vw; height:auto; aspect-ratio:2067/761; inset:auto; overflow:hidden;
-  transform:translate(-50%,-50%) scale(1.015); transform-origin:78% center;
-}
-.home-hero-track--peach .home-hero-stage > .home-hero-copy { z-index:3; }
 
 
 /* Phone-only layout system. All geometry below is scoped to mobile. */
@@ -5562,9 +5555,28 @@ main, .home-content-sheet, .section, .container {
   /* Homepage hero: portrait first, heading and copy directly underneath. */
   .home-hero-track { height:auto !important; min-height:0 !important; margin-top:-72px; overflow:hidden; }
   .home-hero-sticky { position:relative; top:auto; height:auto; min-height:0; overflow:visible; padding-top:72px; }
-  .home-hero-background { display:none !important; }
-  .home-hero-track--peach .home-hero-stage { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:0; width:min(calc(100% - 32px),640px); height:auto; min-height:0; padding:12px 0 36px; }
-  .home-hero-track--peach .home-hero-stage > .home-hero-bg-media { position:relative !important; inset:auto !important; left:auto; top:auto; z-index:0; display:block; width:100%; height:auto; aspect-ratio:4/3; max-height:360px; margin:0 0 24px; border-radius:12px; overflow:hidden; transform:none !important; transform-origin:center center; }
+  /* Flatten the background wrapper only on phones so its image becomes
+     the first normal-flow block. Desktop keeps the original background layer. */
+  .home-hero-background { display:contents !important; }
+  .home-hero-scrim,.home-hero-grain { display:none !important; }
+  .home-hero-track--peach .home-hero-bg-media {
+    position:relative !important;
+    inset:auto !important;
+    left:auto;
+    top:auto;
+    z-index:0;
+    display:block;
+    width:min(calc(100% - 32px),640px);
+    height:auto;
+    aspect-ratio:4/3;
+    max-height:360px;
+    margin:12px auto 24px;
+    border-radius:12px;
+    overflow:hidden;
+    transform:none !important;
+    transform-origin:center center;
+  }
+  .home-hero-track--peach .home-hero-stage { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:0; width:min(calc(100% - 32px),640px); height:auto; min-height:0; padding:0 0 36px; }
   .home-hero-track--peach .home-hero-bg-image { object-fit:cover !important; object-position:86% center !important; }
   .home-hero-track--peach .home-hero-copy { position:relative; z-index:2; width:100%; max-width:100%; padding:0; color:#33201e; }
   .home-hero-track--peach .home-hero-copy .eyebrow { margin:0 0 13px; font-size:8px; letter-spacing:.16em; }
@@ -5668,7 +5680,7 @@ main, .home-content-sheet, .section, .container {
 @media (max-width: 440px) {
   .container { width:calc(100% - 28px); }
   .home-hero-track--peach .home-hero-stage { width:calc(100% - 28px); }
-  .home-hero-track--peach .home-hero-stage > .home-hero-bg-media { aspect-ratio:1/1; max-height:340px; }
+  .home-hero-track--peach .home-hero-bg-media { aspect-ratio:1/1; max-height:340px; }
   .category-grid { grid-template-columns:minmax(0,1fr); }
   .category-tile { min-height:280px; }
   .page-hero h1,.service-hero-copy h1,.category-landing-hero h1,.blog-hero h1,.blog-article-hero h1,.package-detail-hero h1,.services-index-page .services-page-hero h1 { font-size:clamp(32px,9vw,43px); }
