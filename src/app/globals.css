@@ -5463,3 +5463,31 @@ main, .home-content-sheet, .section, .container {
   width: 100%;
   height: 100%;
 }
+
+
+/* Elite Perimeter motion identity: warm, high-contrast brand surfaces. */
+.home-motion-loop { background: #faf7f1; }
+.home-motion-loop__frame,
+.home-motion-loop__frame iframe { background: #faf7f1; }
+@media (max-width: 780px) {
+  .home-motion-loop__frame { aspect-ratio: 9 / 16; }
+}
+
+/* Keep every hero wordmark glyph inside the visible line, including the final IR. */
+.home-hero-track--peach .home-hero-brand-title .hero-title-line {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  overflow: visible !important;
+}
+.home-hero-track--peach .home-hero-brand-title .hero-title-line > .home-hero-wordmark {
+  display: inline-block;
+  width: max-content;
+  max-width: 100%;
+  white-space: nowrap;
+  transform: none;
+  backface-visibility: visible;
+}
+@media (max-width: 780px) {
+  .home-hero-track--peach .home-hero-brand-title .hero-title-line { max-width: 100%; }
+}
