@@ -5491,3 +5491,13 @@ main, .home-content-sheet, .section, .container {
 @media (max-width: 780px) {
   .home-hero-track--peach .home-hero-brand-title .hero-title-line { max-width: 100%; }
 }
+
+
+/* Reserve the motion panel dimensions without fetching its animation before scroll. */
+.home-motion-loop__placeholder {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(185,149,101,.10), transparent 58%),
+    #faf7f1;
+}
