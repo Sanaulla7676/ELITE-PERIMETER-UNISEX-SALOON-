@@ -7,21 +7,21 @@
 <title>Elite Perimeter Unisex Salon | Motion Identity</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet>
 <style>
   * { box-sizing: border-box; }
-  html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #0B0F19; }
+  html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #FAF7F1; }
   body { font-family: "Plus Jakarta Sans", Arial, sans-serif; }
-  .player { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background: #0B0F19; }
-  .stage { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #0B0F19; }
+  .player { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background: #FAF7F1; }
+  .stage { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; background: #FAF7F1; }
   .player:fullscreen { width: 100vw; height: 100vh; }
   .player:fullscreen .stage, .player:fullscreen canvas { width: 100vw; height: 100vh; }
-  canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; background: #0B0F19; }
-  .controls { position: absolute; z-index: 5; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; width: min(620px, calc(100vw - 28px)); padding: 10px 12px; border: 1px solid rgba(252,234,232,.24); border-radius: 999px; background: rgba(13,17,23,.82); color: #FFFFFF; box-shadow: 0 8px 32px rgba(0,0,0,.28); backdrop-filter: blur(14px); font: 12px/1.2 "Plus Jakarta Sans", Arial, sans-serif; transition: opacity .25s ease; }
-  .controls button { flex: 0 0 auto; border: 1px solid rgba(252,234,232,.45); border-radius: 999px; background: #F9D7D3; color: #FFFFFF; padding: 9px 15px; cursor: pointer; font: 700 12px "Plus Jakarta Sans", Arial, sans-serif; }
-  .controls button:hover { background: #EABBB6; }
-  .controls input { min-width: 40px; flex: 1; accent-color: #F9D7D3; cursor: pointer; }
-  .clock { width: 78px; flex: 0 0 auto; text-align: right; color: #FCEAE8; font-variant-numeric: tabular-nums; }
+  canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: fill; background: #FAF7F1; }
+  .controls { position: absolute; z-index: 5; left: 50%; bottom: max(14px, env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; width: min(620px, calc(100vw - 28px)); padding: 10px 12px; border: 1px solid rgba(185,149,101,.38); border-radius: 999px; background: rgba(40,25,35,.94); color: #FFFDF9; box-shadow: 0 8px 32px rgba(40,25,35,.20); backdrop-filter: blur(10px); font: 12px/1.2 "Plus Jakarta Sans", Arial, sans-serif; transition: opacity .25s ease; }
+  .controls button { flex: 0 0 auto; border: 1px solid rgba(185,149,101,.65); border-radius: 999px; background: #B89565; color: #281923; padding: 9px 15px; cursor: pointer; font: 700 12px "Plus Jakarta Sans", Arial, sans-serif; }
+  .controls button:hover { background: #A9767C; }
+  .controls input { min-width: 40px; flex: 1; accent-color: #B89565; cursor: pointer; }
+  .clock { width: 78px; flex: 0 0 auto; text-align: right; color: #F1E9DF; font-variant-numeric: tabular-nums; }
   .note { display: none; }
   @media (max-width: 600px) {
     .controls { gap: 6px; width: calc(100vw - 18px); padding: 8px; bottom: max(8px, env(safe-area-inset-bottom)); }
@@ -48,9 +48,13 @@
 <script>
 (() => {
   'use strict';
-  const W = 1920, H = 1080, DURATION = 15;
+  const W = 1920, H = 1080, PW = 1080, PH = 1920, DURATION = 15;
   const canvas = document.getElementById('motion');
-  const ctx = canvas.getContext('2d');
+  let portrait = window.matchMedia('(max-width: 780px)').matches;
+  canvas.width = portrait ? PW : W;
+  canvas.height = portrait ? PH : H;
+  const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
+  ctx.imageSmoothingEnabled = true;
   const scrub = document.getElementById('scrub');
   const playPause = document.getElementById('playPause');
   const clock = document.getElementById('clock');
@@ -79,27 +83,29 @@
 
   // Example service imagery. Replace with Elite Perimeter's own licensed photographs before commercial publishing.
   const imageSources = [
-    'https://by-hairstylist.de/storage/2024/08/Hero2.png',
-    'https://www.welefulunisexsalon.com/images/blog/i3.jpg',
-    'https://khonaaesthetics.co.za/cdn/shop/files/image_fa4e8269-5240-441b-966b-d811174d10ba.png?v=1771924550&width=3840'
+    '/images/services/haircut-ullal-01-closeup.webp',
+    '/images/services/hair-spa-ullal-01-closeup.webp',
+    '/images/facial-service.jpg'
   ];
   const serviceImages = imageSources.map(src => {
     const image = new Image();
-    image.src = src;
+    image.decoding = 'async';
+    image.fetchPriority = 'low';
     image.loaded = false;
     image.onload = () => { image.loaded = true; };
     image.onerror = () => { image.loaded = false; };
+    image.src = src;
     return image;
   });
 
   // Original BlueVisa palette retained exactly, with salon-specific objects and copy only.
   // Exact original BlueVisa palette. No blue, beige, or alternate blue shades.
   const C = {
-    blue: '#F9D7D3', navy: '#0D1117', white: '#FFFFFF',
-    ice: '#FCEAE8', gray: '#94A3B8', darkBg: '#0B0F19',
-    ivory: '#F8FAFC', paper: '#FFFFFF', line: '#FCEAE8'
+    blue: '#4B2A3D', navy: '#281923', white: '#FFFDF9',
+    ice: '#F1E9DF', gray: '#71666B', darkBg: '#281923',
+    ivory: '#FAF7F1', paper: '#FFFDF9', line: '#E7DED4'
   };
-  const FONT = '"Plus Jakarta Sans", Arial, sans-serif';
+  const FONT = '"Poppins", Arial, sans-serif';
   const clamp = v => Math.max(0, Math.min(1, v));
   const lerp = (a,b,t) => a + (b-a) * clamp(t);
   const remap = (v,a,b) => clamp((v-a)/(b-a));
@@ -124,7 +130,7 @@
   function background(color) { ctx.fillStyle=color; ctx.fillRect(0,0,W,H); }
   function dotGrid(alpha=1) {
     // Original BlueVisa pale blue-grey dot pattern.
-    ctx.save(); ctx.fillStyle = `rgba(180,198,220,${alpha*.45})`;
+    ctx.save(); ctx.fillStyle = `rgba(185,149,101,${alpha*.45})`;
     const spacing = 34;
     for (let x=spacing; x<W; x+=spacing) for (let y=spacing; y<H; y+=spacing) {
       ctx.beginPath(); ctx.arc(x,y,1.4,0,Math.PI*2); ctx.fill();
@@ -175,7 +181,7 @@
   function drawSalonChair(cx,cy,scale,alpha=1) {
     ctx.save(); ctx.globalAlpha=alpha; ctx.translate(cx,cy); ctx.scale(scale,scale);
     // Vanity mirror halo
-    ctx.strokeStyle='rgba(249,215,211,.55)'; ctx.lineWidth=5;
+    ctx.strokeStyle='rgba(185,149,101,.55)'; ctx.lineWidth=5;
     ctx.beginPath(); ctx.roundRect(-170,-330,340,420,165); ctx.stroke();
     ctx.strokeStyle='rgba(255,255,255,.85)'; ctx.lineWidth=12;
     for(let i=0;i<13;i++){const a=(-.85+i*.14);const x=Math.cos(a)*168;const y=-120+Math.sin(a)*207;ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.stroke();}
@@ -186,7 +192,7 @@
     // seat support
     rounded(-16,120,32,112,12,C.navy); rounded(-82,218,164,18,9,C.navy);
     // arm supports
-    ctx.strokeStyle='#F9D7D3'; ctx.lineWidth=12; ctx.lineCap='round';
+    ctx.strokeStyle='#B89565'; ctx.lineWidth=12; ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(-132,25);ctx.lineTo(-132,125);ctx.lineTo(-82,140);ctx.stroke();
     ctx.beginPath();ctx.moveTo(132,25);ctx.lineTo(132,125);ctx.lineTo(82,140);ctx.stroke();
     // chair body
@@ -201,7 +207,7 @@
   function drawAppointmentCard(cx,cy,angle,scale,alpha,stampProgress) {
     ctx.save(); ctx.globalAlpha=alpha; ctx.translate(cx,cy); ctx.rotate(angle); ctx.scale(scale,scale);
     const w=570,h=330;
-    ctx.shadowColor='rgba(0,40,100,.18)';ctx.shadowBlur=38;ctx.shadowOffsetX=8;ctx.shadowOffsetY=15;
+    ctx.shadowColor='rgba(40,25,35,.18)';ctx.shadowBlur=38;ctx.shadowOffsetX=8;ctx.shadowOffsetY=15;
     rounded(-w/2,-h/2,w,h,22,C.paper);ctx.shadowColor='transparent';
     rounded(-w/2,-h/2,w,62,[22,22,0,0],C.blue);
     text('ELITE PERIMETER',-w/2+28,-h/2+20,17,800,C.paper);
@@ -211,7 +217,7 @@
     ctx.strokeStyle=C.line;ctx.lineWidth=2;ctx.setLineDash([5,7]);ctx.beginPath();ctx.moveTo(-w/2+28,8);ctx.lineTo(w/2-28,8);ctx.stroke();ctx.setLineDash([]);
     const labels=[['SERVICE','PERSONAL CARE'],['EXPERIENCE','PREMIUM'],['STATUS','READY FOR YOU']];
     labels.forEach((a,i)=>{const x=-w/2+30+i*178;text(a[0],x,42,11,700,C.gray);text(a[1],x,66,15,800,C.navy);});
-    if(stampProgress>0){const p=clamp(stampProgress);ctx.save();ctx.globalAlpha*=easeOutCubic(p);const s=lerp(1.6,1,p);ctx.translate(115,72);ctx.rotate(-.16);ctx.scale(s,s);rounded(-105,-28,210,56,9,'rgba(249,215,211,.08)',C.blue,4);rounded(-98,-21,196,42,6,null,C.blue,1.5);text('CONFIRMED',0,0,25,800,C.blue,'center','middle');ctx.restore();}
+    if(stampProgress>0){const p=clamp(stampProgress);ctx.save();ctx.globalAlpha*=easeOutCubic(p);const s=lerp(1.6,1,p);ctx.translate(115,72);ctx.rotate(-.16);ctx.scale(s,s);rounded(-105,-28,210,56,9,'rgba(185,149,101,.08)',C.blue,4);rounded(-98,-21,196,42,6,null,C.blue,1.5);text('CONFIRMED',0,0,25,800,C.blue,'center','middle');ctx.restore();}
     ctx.restore();
   }
   function drawPill(x,y,label) {
@@ -226,7 +232,7 @@
   function scene1(t) {
     background(C.ivory); dotGrid(1);
     const glow=ctx.createRadialGradient(W*.78,H*.42,0,W*.78,H*.42,650);
-    glow.addColorStop(0,'rgba(249,215,211,.12)');glow.addColorStop(1,'rgba(249,215,211,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    glow.addColorStop(0,'rgba(185,149,101,.12)');glow.addColorStop(1,'rgba(185,149,101,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
     const p=spring(remap(t,0,.45),3.5,7.5), x=lerp(-520,125,p);
     text('YOUR ONLY PLAN',x,215,21,700,C.blue);
     text('Take',x,295,138,800,C.navy);
@@ -303,7 +309,7 @@
     ctx.fillStyle=glow;ctx.beginPath();ctx.arc(x,y,glowRadius,0,Math.PI*2);ctx.fill();
     ctx.shadowColor='rgba(255,255,255,.9)';ctx.shadowBlur=25*ORBIT_SX;
     const fill=ctx.createRadialGradient(x-radius*.24,y-radius*.28,1,x,y,radius);
-    fill.addColorStop(0,'#FFFFFF');fill.addColorStop(.72,'#FFFFFF');fill.addColorStop(1,'#FCEAE8');
+    fill.addColorStop(0,'#FFFFFF');fill.addColorStop(.72,'#FFFFFF');fill.addColorStop(1,'#F1E9DF');
     ctx.fillStyle=fill;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();
     ctx.restore();
   }
@@ -332,7 +338,7 @@
   // SCENE 3 (4.0–8.75s): salon chair + service checklist.
   function scene3(t) {
     background(C.ivory);dotGrid(1);
-    if(t<5){const p=remap(t,4,4.9),r=lerp(25,600,easeOutExpo(p));ctx.strokeStyle=`rgba(249,215,211,${.28*(1-p)})`;ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(W*.28,H*.76,r,r*.17,0,0,Math.PI*2);ctx.stroke();}
+    if(t<5){const p=remap(t,4,4.9),r=lerp(25,600,easeOutExpo(p));ctx.strokeStyle=`rgba(185,149,101,${.28*(1-p)})`;ctx.lineWidth=3;ctx.beginPath();ctx.ellipse(W*.28,H*.76,r,r*.17,0,0,Math.PI*2);ctx.stroke();}
     const chairP=spring(remap(t,4,4.62),2.5,6);
     const chairY=lerp(-260,H*.67,chairP);
     drawSalonChair(W*.28,chairY,1.02,clamp(chairP*2));
@@ -346,7 +352,7 @@
       const ap=spring(remap(t,start,start+.32),3.4,8);
       const y=panelY+i*(rowH+gap)+lerp(28,0,ap);
       ctx.save();ctx.globalAlpha=clamp(ap);
-      ctx.shadowColor='rgba(0,40,100,.12)';ctx.shadowBlur=24;ctx.shadowOffsetY=7;
+      ctx.shadowColor='rgba(40,25,35,.12)';ctx.shadowBlur=24;ctx.shadowOffsetY=7;
       rounded(panelX-panelW/2,y,panelW,rowH,17,C.paper,C.line,1.5);ctx.shadowColor='transparent';
       rounded(panelX-panelW/2+15,y+11,44,44,13,C.ice);
       text(service.icon,panelX-panelW/2+37,y+34,23,700,C.blue,'center','middle');
@@ -358,12 +364,12 @@
     const count=SERVICES.filter((s,i)=>t>=4.48+i*.48+.28).length;
     if(t>=4.5){for(let i=0;i<6;i++){ctx.fillStyle=i<count?C.blue:C.line;ctx.beginPath();ctx.arc(820+i*24,H-58,5,0,Math.PI*2);ctx.fill();}text(`${count} / 6 SERVICES`,910,H-58,15,700,C.gray,'left','middle');}
     if(t>=7.9){const fp=spring(remap(t,7.9,8.25),3.5,7.5);ctx.save();ctx.globalAlpha=fp;rounded(1160,820,520,70,18,C.navy);text('YOUR SALON MOMENT STARTS HERE',1420,855,18,800,C.paper,'center','middle');ctx.restore();}
-    if(t>=8.45){const z=easeInExpo(remap(t,8.45,8.95));ctx.save();ctx.globalAlpha=z;ctx.fillStyle=C.darkBgBg;ctx.fillRect(0,0,W,H);ctx.restore();}
+    if(t>=8.45){const z=easeInExpo(remap(t,8.45,8.95));ctx.save();ctx.globalAlpha=z;ctx.fillStyle=C.darkBg;ctx.fillRect(0,0,W,H);ctx.restore();}
   }
 
   // SCENE 4 (8.75–12.0s): three salon service image reveals.
   function scene4(t) {
-    background(C.darkBgBg);
+    background(C.darkBg);
     const panels=[
       {start:8.75,end:9.82,img:serviceImages[0],name:'HAIRCUT & STYLING',sub:'PRECISION. MOVEMENT. FINISH.'},
       {start:9.75,end:10.84,img:serviceImages[1],name:'HAIR COLOUR',sub:'TONE. DEPTH. DIMENSION.'},
@@ -409,7 +415,7 @@
   // SCENE 6 (13.0–15.0s): salon logo lockup and end title.
   function scene6(t) {
     background(C.ivory);dotGrid(.45);
-    const glow=ctx.createRadialGradient(W/2,H/2-80,0,W/2,H/2-80,620);glow.addColorStop(0,'rgba(249,215,211,.08)');glow.addColorStop(1,'rgba(249,215,211,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+    const glow=ctx.createRadialGradient(W/2,H/2-80,0,W/2,H/2-80,620);glow.addColorStop(0,'rgba(185,149,101,.08)');glow.addColorStop(1,'rgba(185,149,101,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
     const lp=spring(remap(t,13,13.48),3.5,7),r=48;
     const brandWidth=620,total=r*2+30+brandWidth,startX=W/2-total/2,cy=H/2-105;
     if(lp>0){ctx.save();ctx.globalAlpha=lp;drawSalonEmblem(startX+r,cy,r,lp);const blur=lerp(10,0,lp);if(blur>.4)ctx.filter=`blur(${blur}px)`;text(BRAND.name,startX+2*r+30,cy-10,68,800,C.navy,'left','middle');ctx.filter='none';text(BRAND.descriptor,startX+2*r+32,cy+48,20,700,C.blue,'left','middle');ctx.restore();}
@@ -419,23 +425,103 @@
     const cp=easeOutExpo(remap(t,14.3,14.7));if(cp>0){ctx.save();ctx.globalAlpha=cp;text(BRAND.callToAction,W/2,H/2+205,19,700,C.blue,'center','top');if(BRAND.website)text(BRAND.website,W/2,H/2+247,16,600,C.gray,'center','top');ctx.restore();}
   }
 
+
+  // Dedicated 9:16 compositions for phones. Desktop continues to use the original
+  // 1920 × 1080 scene layout; portrait scenes rearrange its existing visual language.
+  function portraitSurface(color=C.ivory) {
+    ctx.fillStyle=color; ctx.fillRect(0,0,PW,PH);
+    if(color!==C.navy && color!==C.darkBg) {
+      const glow=ctx.createRadialGradient(PW*.5,PH*.32,0,PW*.5,PH*.32,780);
+      glow.addColorStop(0,'rgba(185,149,101,.13)'); glow.addColorStop(1,'rgba(185,149,101,0)');
+      ctx.fillStyle=glow; ctx.fillRect(0,0,PW,PH);
+      ctx.save(); ctx.fillStyle='rgba(185,149,101,.16)';
+      for(let x=42;x<PW;x+=54) for(let y=44;y<PH;y+=54) {ctx.beginPath();ctx.arc(x,y,1.4,0,Math.PI*2);ctx.fill();}
+      ctx.restore();
+    }
+  }
+  function portraitScene1(t) {
+    portraitSurface();
+    const p=spring(remap(t,0,.45),3.5,7.5);
+    ctx.save();ctx.globalAlpha=clamp(p);
+    text('YOUR ONLY PLAN',PW/2,260,24,700,C.blue,'center');
+    text('Take',PW/2,395,150,800,C.navy,'center');
+    text('your',PW/2,575,150,800,C.navy,'center');
+    text('time.',PW/2,755,150,800,C.blue,'center');ctx.restore();
+    const cardP=spring(remap(t,.25,.78),3,6.5);
+    drawAppointmentCard(PW/2,1390,0,1.08,clamp(cardP*2),remap(t,1.36,1.62));
+    if(t>=1.68){const radius=lerp(0,2450,easeInCubic(remap(t,1.68,2.05)));ctx.fillStyle=C.blue;ctx.beginPath();ctx.arc(PW/2,PH*.56,radius,0,Math.PI*2);ctx.fill();}
+  }
+  function portraitScene2(t) {
+    portraitSurface(C.paper2);const cx=PW/2,cy=900,rx=405,ry=560;
+    ctx.save();ctx.strokeStyle='rgba(185,149,101,.42)';ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.stroke();
+    ctx.strokeStyle='rgba(75,42,61,.14)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(cx,cy,rx*.84,ry*.84,0,0,Math.PI*2);ctx.stroke();ctx.restore();
+    const appear=easeOutExpo(remap(t,2.05,2.55));drawSalonEmblem(cx,cy,165,appear);
+    const orbit=remap(t,2.05,3.68)*Math.PI*2;drawOrbitNode(cx+Math.cos(orbit)*rx,cy+Math.sin(orbit)*ry,appear);
+    ctx.save();ctx.globalAlpha=appear;text('ELITE PERIMETER',cx,1570,51,800,C.navy,'center');text('UNISEX SALON',cx,1645,23,700,C.blue,'center');text('YOUR STYLE. OUR SIGNATURE.',cx,1750,20,600,C.gray,'center');ctx.restore();
+    if(t>=3.7){const radius=lerp(0,2600,easeOutExpo(remap(t,3.7,4.15)));ctx.fillStyle=C.ivory;ctx.beginPath();ctx.arc(cx,cy,radius,0,Math.PI*2);ctx.fill();}
+  }
+  function portraitScene3(t) {
+    portraitSurface();const titleAlpha=easeOutExpo(remap(t,4.15,4.55));ctx.save();ctx.globalAlpha=titleAlpha;
+    text('MAKE YOURSELF AT HOME',PW/2,100,22,700,C.blue,'center');text('Your look, beautifully handled.',PW/2,162,43,800,C.navy,'center');ctx.restore();
+    const chairProgress=spring(remap(t,4.15,4.85),2.5,6);drawSalonChair(PW/2,700,.72,clamp(chairProgress*2));
+    const panelX=540,panelY=965,panelW=940,rowH=74,gap=12;
+    SERVICES.forEach((service,i)=>{const start=4.48+i*.48;if(t<start)return;const progress=spring(remap(t,start,start+.32),3.4,8);const y=panelY+i*(rowH+gap)+lerp(30,0,progress);
+      ctx.save();ctx.globalAlpha=clamp(progress);ctx.shadowColor='rgba(40,25,35,.12)';ctx.shadowBlur=18;ctx.shadowOffsetY=6;
+      rounded(panelX-panelW/2,y,panelW,rowH,17,C.paper,C.line,1.5);ctx.shadowColor='transparent';rounded(panelX-panelW/2+14,y+12,50,50,13,C.paper2);
+      text(service.icon,panelX-panelW/2+39,y+38,23,700,C.blue,'center','middle');text(service.name,panelX-panelW/2+84,y+38,22,700,C.navy,'left','middle');
+      rounded(panelX+panelW/2-148,y+18,126,38,18,C.paper2);text(service.status,panelX+panelW/2-85,y+37,11,800,C.blue,'center','middle');ctx.restore();});
+    const count=SERVICES.filter((s,i)=>t>=4.48+i*.48+.28).length;
+    if(t>=4.5){for(let i=0;i<6;i++){ctx.fillStyle=i<count?C.blue:C.line;ctx.beginPath();ctx.arc(430+i*44,1580,5,0,Math.PI*2);ctx.fill();}text(`${count} / 6 SERVICES`,540,1610,15,700,C.gray,'center');}
+    if(t>=7.9){const p=spring(remap(t,7.9,8.25),3.5,7.5);ctx.save();ctx.globalAlpha=p;rounded(145,1690,790,88,20,C.navy);text('YOUR SALON MOMENT STARTS HERE',540,1734,20,800,C.paper,'center','middle');ctx.restore();}
+  }
+  function portraitScene4(t) {
+    portraitSurface(C.darkBg);
+    const panels=[{start:8.75,end:9.82,img:serviceImages[0],name:'HAIRCUT & STYLING',sub:'PRECISION. MOVEMENT. FINISH.'},{start:9.75,end:10.84,img:serviceImages[1],name:'HAIR CARE & TREATMENTS',sub:'TONE. DEPTH. DIMENSION.'},{start:10.75,end:11.98,img:serviceImages[2],name:'SKIN & FACIAL CARE',sub:'A MOMENT TO RESET.'}];
+    panels.forEach((item,i)=>{if(t<item.start||t>=item.end+.16)return;const incoming=easeOutExpo(remap(t,item.start,item.start+.24));const outgoing=t>=item.end?easeInCubic(remap(t,item.end,item.end+.16)):0;const alpha=incoming*(1-outgoing);
+      ctx.save();ctx.globalAlpha=alpha;const zoom=lerp(1,1.055,remap(t,item.start,item.end));ctx.translate(PW/2,PH/2);ctx.scale(zoom,zoom);drawImageCover(item.img,-PW/2,-PH/2,PW,PH,1,i);ctx.restore();
+      const veil=ctx.createLinearGradient(0,PH*.58,0,PH);veil.addColorStop(0,'rgba(40,25,35,0)');veil.addColorStop(1,'rgba(40,25,35,.78)');
+      ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=veil;ctx.fillRect(0,0,PW,PH);text(`0${i+1} / 03`,78,PH-345,20,700,C.paper);text(item.name,78,PH-270,48,800,C.paper);text(item.sub,78,PH-195,19,600,'rgba(255,253,249,.9)');ctx.restore();});
+  }
+  function portraitScene5(t) {
+    portraitSurface(C.darkBg);const intro=easeOutExpo(remap(t,11.85,12.2)),collapse=easeInExpo(remap(t,12.55,12.98));
+    if(intro>0&&collapse<1){ctx.save();ctx.globalAlpha=intro;text('ONE SALON. EVERY DETAIL.',PW/2,145,36,800,C.paper,'center');ctx.restore();}
+    const cardW=850,cardH=310,gap=26,total=3*cardH+2*gap,startY=(PH-total)/2+30;
+    const cards=[{img:serviceImages[0],label:'CUT & STYLE'},{img:serviceImages[1],label:'HAIR CARE'},{img:serviceImages[2],label:'SKIN CARE'}];
+    cards.forEach((card,i)=>{const baseY=startY+i*(cardH+gap)+cardH/2;const centerY=lerp(baseY,PH/2,collapse),scale=lerp(1,.04,collapse),alpha=intro*(1-Math.pow(collapse,3));if(alpha<=0)return;
+      ctx.save();ctx.globalAlpha=alpha;ctx.translate(PW/2,centerY);ctx.scale(scale,scale);ctx.beginPath();ctx.roundRect(-cardW/2,-cardH/2,cardW,cardH,24);ctx.clip();
+      drawImageCover(card.img,-cardW/2,-cardH/2,cardW,cardH,1,i);const shade=ctx.createLinearGradient(0,0,0,cardH/2);shade.addColorStop(0,'rgba(40,25,35,0)');shade.addColorStop(1,'rgba(40,25,35,.72)');ctx.fillStyle=shade;ctx.fillRect(-cardW/2,-cardH/2,cardW,cardH);
+      text(card.label,0,cardH/2-54,27,800,C.paper,'center','middle');ctx.restore();});
+    if(collapse>.2){const progress=remap(collapse,.2,1),radius=lerp(8,42,easeOutExpo(progress));ctx.save();ctx.fillStyle=C.blue;ctx.shadowColor=C.blue;ctx.shadowBlur=36;ctx.beginPath();ctx.arc(PW/2,PH/2,radius,0,Math.PI*2);ctx.fill();ctx.restore();}
+    if(t>=12.88){const progress=easeOutExpo(remap(t,12.88,13.22)),radius=lerp(0,2600,progress);ctx.fillStyle=C.ivory;ctx.beginPath();ctx.arc(PW/2,PH/2,radius,0,Math.PI*2);ctx.fill();}
+  }
+  function portraitScene6(t) {
+    portraitSurface();const appear=spring(remap(t,13,13.48),3.5,7),centerX=PW/2;
+    if(appear>0){ctx.save();ctx.globalAlpha=appear;drawSalonEmblem(centerX,500,132,appear);const blur=lerp(10,0,appear);if(blur>.4)ctx.filter=`blur(${blur}px)`;text(BRAND.name,centerX,740,64,800,C.navy,'center','middle');ctx.filter='none';text(BRAND.descriptor,centerX,810,24,700,C.blue,'center','middle');ctx.restore();}
+    const taglineProgress=easeOutExpo(remap(t,13.55,14.05));if(taglineProgress>0){ctx.save();ctx.globalAlpha=taglineProgress;text(BRAND.tagline,centerX,1000,38,700,C.navy,'center','middle');ctx.restore();}
+    const labels=['HAIR','SKIN','GROOMING'];const widths=labels.map(v=>{ctx.font=`700 18px ${FONT}`;return ctx.measureText(v).width+58;});const total=widths.reduce((sum,value)=>sum+value,0)+26*2;let x=centerX-total/2;
+    labels.forEach((label,i)=>{const p=spring(remap(t,13.9+i*.08,14.3+i*.08),3.5,7.5);if(p>0){ctx.save();ctx.globalAlpha=p;drawPill(x,1200+lerp(24,0,p),label);ctx.restore();}x+=widths[i]+26;});
+    const ctaProgress=easeOutExpo(remap(t,14.3,14.7));if(ctaProgress>0){ctx.save();ctx.globalAlpha=ctaProgress;text(BRAND.callToAction,centerX,1400,20,700,C.blue,'center');ctx.restore();}
+  }
+
   function render(t) {
-    ctx.save();ctx.clearRect(0,0,W,H);
-    if(t<2.05)scene1(t);
-    else if(t<4.1)scene2(t);
-    else if(t<8.75)scene3(t);
-    else if(t<12)scene4(t);
-    else if(t<13.2)scene5(t);
-    else scene6(t);
+    ctx.save();ctx.clearRect(0,0,canvas.width,canvas.height);
+    if(portrait){if(t<2.05)portraitScene1(t);else if(t<4.1)portraitScene2(t);else if(t<8.75)portraitScene3(t);else if(t<12)portraitScene4(t);else if(t<13.2)portraitScene5(t);else portraitScene6(t);}
+    else {if(t<2.05)scene1(t);else if(t<4.1)scene2(t);else if(t<8.75)scene3(t);else if(t<12)scene4(t);else if(t<13.2)scene5(t);else scene6(t);}
     ctx.restore();
   }
 
+  // Keep the drawing buffer aligned with the responsive iframe on phone rotation.
+  let lastRenderAt=0;
+  function syncCanvasOrientation(){const nextPortrait=window.matchMedia('(max-width: 780px)').matches;if(nextPortrait===portrait)return;portrait=nextPortrait;canvas.width=portrait?PW:W;canvas.height=portrait?PH:H;lastRenderAt=0;render(elapsed);}
+  window.addEventListener('resize',syncCanvasOrientation,{passive:true});
+
   // Seek API retained for compatibility with a frame renderer.
   window.seek = function(seconds) { const t=Math.max(0,Math.min(DURATION,Number(seconds)||0)); render(t); scrub.value=String(t); updateClock(t); };
-  let playing=true, last=performance.now(), elapsed=0, raf=0;
-  function updateClock(t){const s=Math.floor(t),cs=Math.floor((t-s)*100);clock.textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} / 00:15`;}
-  function loop(now){if(!playing)return;const dt=Math.min((now-last)/1000,.06);last=now;elapsed+=dt;if(elapsed>DURATION)elapsed=0;render(elapsed);scrub.value=String(elapsed);updateClock(elapsed);raf=requestAnimationFrame(loop);}
-  function play(){playing=true;last=performance.now();playPause.textContent='Pause';cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
+  const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let playing=false,last=performance.now(),elapsed=0,raf=0;
+  function updateClock(t){const s=Math.floor(t);clock.textContent=`${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')} / 00:15`;}
+  function loop(now){if(!playing)return;const dt=Math.min((now-last)/1000,.06);last=now;elapsed+=dt;if(elapsed>DURATION)elapsed=0;const frameInterval=portrait?1000/30:1000/60;if(now-lastRenderAt>=frameInterval){render(elapsed);scrub.value=String(elapsed);updateClock(elapsed);lastRenderAt=now;}raf=requestAnimationFrame(loop);}
+  function play(){playing=true;last=performance.now();lastRenderAt=0;playPause.textContent='Pause';cancelAnimationFrame(raf);raf=requestAnimationFrame(loop);}
   function pause(){playing=false;playPause.textContent='Play';cancelAnimationFrame(raf);}
   playPause.addEventListener('click',()=>playing?pause():play());
   fullscreenButton.addEventListener('click', async () => {
@@ -453,7 +539,8 @@
   });
   scrub.addEventListener('input',()=>{elapsed=Number(scrub.value);render(elapsed);updateClock(elapsed);});
   window.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();playing?pause():play();}});
-  render(0);play();
+  render(reduceMotion?14.99:0);
+  if(!reduceMotion)play();else playPause.textContent='Play';
 })();
 </script>
 </body>
